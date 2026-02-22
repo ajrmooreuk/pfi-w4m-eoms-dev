@@ -1,6 +1,8 @@
 # EOMS Phase 1 — Scope on a Page
 
-**Endeavour Order Management System | 19 February 2026**
+**Endeavour Order Management System | APPROVED 22 February 2026**
+
+> **Status: APPROVED** — Gate G1 passed. Scope confirmed, development authorised to commence.
 
 ---
 
@@ -10,19 +12,19 @@
 
 ---
 
-## What Changed
+## What Changed (Reduced Scope — Approved)
 
-| Change | Was | Now | Why | Brief |
-|--------|-----|-----|-----|:-----:|
+| Change | Was | Now | Why | Approved |
+|--------|-----|-----|-----|:--------:|
 | **Scope narrowed to 3 epics** | 5 (Order, Product, AI, FX, Dashboards) | 3 (Order, Product, Order Export to Finance) | Focus on core workflow — prove the value before adding intelligence | ✅ |
 | **AI / Agents removed** | Claude SDK, 4 AI agents, PF-Core | Removed entirely | Deferred to Phase 2 — not needed to prove efficiency gains | ✅ |
 | **FX Integration removed** | Currency conversion, FX contracts | Removed entirely | Deferred — adds complexity without proving core workflow | ✅ |
 | **Dashboards removed** | Trader, Executive, Finance dashboards | Removed entirely | Deferred — analytics comes after clean data is flowing | ✅ |
 | **Approval workflow simplified** | 8-state lifecycle, authority matrix | 3-state (Draft → Complete → Exported) | Traders own the workflow — no approval bottleneck | ✅ |
-| **Design phase cut** | Figma wireframes, mockups, prototypes | Tokens applied directly in code | Saves time and cost — existing brand system sufficient | |
-| **Roles simplified** | 3 (Trader, Operations, Admin) | 2 (Trader, Admin) | Operations folded into Trader — simpler | |
-| **Mobile de-risked** | MUST have | SHOULD have (desktop-first) | Traders use desktop; mobile if budget allows | |
-| **PMF folded into UAT** | Separate research phase | Integrated into user testing | Feedback from real usage — no extra overhead | |
+| **Design phase cut** | Figma wireframes, mockups, prototypes | Tokens applied directly in code | Saves time and cost — existing brand system sufficient | ✅ |
+| **Roles simplified** | 3 (Trader, Operations, Admin) | 2 (Trader, Admin) | Operations folded into Trader — simpler | ✅ |
+| **Mobile de-risked** | MUST have | SHOULD have (desktop-first) | Traders use desktop; mobile if budget allows | ✅ |
+| **PMF folded into UAT** | Separate research phase | Integrated into user testing | Feedback from real usage — no extra overhead | ✅ |
 | **Order Export promoted** | Future phase | Phase 1 core (CSV/JSON) | Day-one requirement — data must flow to finance | ✅ |
 
 ---
@@ -70,6 +72,18 @@
 Phase 1 builds the **data foundation and workflow engine** — a simple, effective order entry system that replaces spreadsheets, reduces errors, and saves the trade team hours per week. This foundation is deliberately designed so that AI validation, FX integration, dashboards, and analytics can be layered on in future phases with minimal rework.
 
 **Prove the efficiency gain first, then add intelligence.**
+
+---
+
+## Approval Record
+
+| Item | Detail |
+|------|--------|
+| **Gate** | G1: Phase 1 Approval |
+| **Date** | 22 February 2026 |
+| **Decision** | APPROVED — Proceed to development |
+| **Approved By** | CEO / CFO |
+| **Advisory** | wings4mind.ai |
 
 ---
 
