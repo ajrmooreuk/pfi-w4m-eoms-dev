@@ -1,0 +1,170 @@
+{
+  "register": "EOMS Unified Register",
+  "version": "1.0.0",
+  "created": "2026-01-26",
+  "modified": "2026-01-26",
+  "schema_version": "eoms-artifact-v1.0",
+  "artifacts": [
+    {
+      "id": "eoms:strategic:proposal-v2.1",
+      "type": "Proposal",
+      "category": "strategic",
+      "name": "EOMS Business Case & ROI",
+      "version": "2.1",
+      "status": "approved",
+      "path": "PROPOSALS/EOMS_PROPOSAL_v2.1.md",
+      "created": "2026-01-26",
+      "modified": "2026-01-26",
+      "cc_refs": ["CC-011", "CC-012", "CC-013", "CC-014", "CC-015"],
+      "dependencies": []
+    },
+    {
+      "id": "eoms:strategic:prd-v1.7",
+      "type": "PRD",
+      "category": "strategic",
+      "name": "EOMS Product Requirements Document",
+      "version": "1.7",
+      "status": "active",
+      "path": "PROPOSALS/EOMS_PRD_UNIFIED_v1.7.md",
+      "created": "2026-01-26",
+      "modified": "2026-01-26",
+      "cc_refs": ["CC-001", "CC-002", "CC-003", "CC-004", "CC-005", "CC-006", "CC-007", "CC-008", "CC-009", "CC-010", "CC-016", "CC-017", "CC-018", "CC-019", "CC-020", "CC-021", "CC-022", "CC-024", "CC-025", "CC-026", "CC-039", "CC-040", "CC-041", "CC-042", "CC-043", "CC-044", "CC-045", "CC-046", "CC-047", "CC-048"],
+      "dependencies": ["eoms:strategic:proposal-v2.1"]
+    },
+    {
+      "id": "eoms:technical:hld-v1.1",
+      "type": "HLD",
+      "category": "technical",
+      "name": "EOMS High-Level Design",
+      "version": "1.1",
+      "status": "draft",
+      "path": "PROPOSALS/EOMS_HLD.md",
+      "created": "2026-01-26",
+      "modified": "2026-01-26",
+      "cc_refs": ["CC-030", "CC-031", "CC-040", "CC-041", "CC-042"],
+      "dependencies": ["eoms:strategic:prd-v1.7"]
+    },
+    {
+      "id": "eoms:technical:impl-plan-v1.1",
+      "type": "Implementation Plan",
+      "category": "technical",
+      "name": "EOMS Implementation Plan",
+      "version": "1.1",
+      "status": "draft",
+      "path": "PROPOSALS/EOMS_IMPLEMENTATION_PLAN.md",
+      "created": "2026-01-26",
+      "modified": "2026-01-26",
+      "cc_refs": ["CC-029", "CC-042", "CC-043"],
+      "dependencies": ["eoms:strategic:prd-v1.6", "eoms:technical:hld-v1.1"]
+    },
+    {
+      "id": "eoms:governance:change-control-v1.0",
+      "type": "Change Control",
+      "category": "governance",
+      "name": "EOMS Change Control Register",
+      "version": "1.0",
+      "status": "active",
+      "path": "PROPOSALS/EOMS_CHANGE_CONTROL.md",
+      "created": "2026-01-26",
+      "modified": "2026-01-26",
+      "cc_refs": [],
+      "dependencies": []
+    },
+    {
+      "id": "eoms:governance:traceability-v1.0",
+      "type": "Traceability Matrix",
+      "category": "governance",
+      "name": "EOMS Document Traceability",
+      "version": "1.0",
+      "status": "draft",
+      "path": "PROPOSALS/EOMS_DOCUMENT_TRACEABILITY.md",
+      "created": "2026-01-26",
+      "modified": "2026-01-26",
+      "cc_refs": [],
+      "dependencies": ["eoms:strategic:proposal-v2.1", "eoms:strategic:prd-v1.5", "eoms:technical:hld-v1.0", "eoms:technical:impl-plan-v1.0"]
+    },
+    {
+      "id": "eoms:governance:dcr-v1.0",
+      "type": "Document Control Register",
+      "category": "governance",
+      "name": "EOMS Document Control Register",
+      "version": "1.0",
+      "status": "active",
+      "path": "std-docs/EOMS_DOCUMENT_CONTROL_REGISTER.md",
+      "created": "2026-01-26",
+      "modified": "2026-01-26",
+      "cc_refs": ["CC-032"],
+      "dependencies": []
+    },
+    {
+      "id": "eoms:standard:file-inventory-prompt-v1.0",
+      "type": "Prompt Template",
+      "category": "standard",
+      "name": "File Inventory System Prompt",
+      "version": "1.0",
+      "status": "active",
+      "path": "std-docs/file-inventory-prompt.md",
+      "created": "2026-01-26",
+      "modified": "2026-01-26",
+      "cc_refs": ["CC-033"],
+      "dependencies": []
+    },
+    {
+      "id": "eoms:standard:unified-register-process-v1.0",
+      "type": "Process Document",
+      "category": "standard",
+      "name": "EOMS Unified Register Process",
+      "version": "1.0",
+      "status": "active",
+      "path": "std-docs/EOMS_UNIFIED_REGISTER_PROCESS.md",
+      "created": "2026-01-26",
+      "modified": "2026-01-26",
+      "cc_refs": ["CC-034"],
+      "dependencies": ["eoms:governance:dcr-v1.0", "eoms:governance:change-control-v1.0"]
+    },
+    {
+      "id": "eoms:data:unified-register-v1.0",
+      "type": "Registry",
+      "category": "data",
+      "name": "EOMS Unified Register JSON",
+      "version": "1.0",
+      "status": "active",
+      "path": "std-docs/eoms_unified_register.json",
+      "created": "2026-01-26",
+      "modified": "2026-01-26",
+      "cc_refs": ["CC-034"],
+      "dependencies": []
+    },
+    {
+      "id": "eoms:standard:cc-github-workflow-v1.2",
+      "type": "Workflow Document",
+      "category": "standard",
+      "name": "EOMS CC & GitHub Workflow",
+      "version": "1.2",
+      "status": "active",
+      "path": "std-docs/EOMS_CC_GITHUB_WORKFLOW.md",
+      "created": "2026-01-26",
+      "modified": "2026-01-26",
+      "cc_refs": ["CC-036", "CC-037", "CC-038"],
+      "dependencies": ["eoms:governance:change-control-v1.0"]
+    }
+  ],
+  "metadata": {
+    "total_artifacts": 11,
+    "by_category": {
+      "governance": 3,
+      "strategic": 2,
+      "technical": 2,
+      "standard": 3,
+      "data": 1,
+      "design": 0
+    },
+    "by_status": {
+      "active": 6,
+      "draft": 3,
+      "approved": 1,
+      "review": 0,
+      "superseded": 0
+    }
+  }
+}
