@@ -23,7 +23,7 @@
 | **Stories Complete** | 13 / 53 |
 | **Next Gate** | G2 — Core Feature Complete |
 | **Blockers** | Client Supabase setup — needs shared Gmail (discuss with FB) |
-| **Key Decisions This Week** | Epic 8 added. Test data CSV imported. File-based JSON before DB — early client visualisation. Client Supabase ownership flagged P1. |
+| **Key Decisions This Week** | Epic 8 added. Test data CSV imported. File-based JSON before DB — early client visualisation. Client Supabase ownership flagged P1. EOMS custom graph + EMC instance created — available in Ontology Visualiser for review. |
 
 ### Status History
 
@@ -31,7 +31,7 @@
 |------|------|-----|-------|
 | W1 | 24 Feb 2026 | GREEN | Epic 0 started. Env + DB setup. |
 | W2 | 3 Mar 2026 | GREEN | G1 passed. Auth, data import, design tokens. |
-| W3 | 10 Mar 2026 | AMBER | Epic 8 added. DS-ONT instance + skeleton created. Test data CSV imported. File-based JSON approach adopted. **P1 BLOCKER:** Client Supabase setup requires shared Gmail — discuss with FB. |
+| W3 | 10 Mar 2026 | AMBER | Epic 8 added. DS-ONT instance + skeleton created. Test data CSV imported. File-based JSON approach adopted. EOMS custom graph created (EMC instance + SOP instances) — Ontology Visualiser available for review and inspection. Client Supabase setup — resolving in meeting with FB. |
 
 ---
 
@@ -412,12 +412,16 @@ EOMS has its own PFI graph instance (`pfi-w4m-eoms`) — distinct from other W4M
 | `eoms-endeavour-ds-instance-v1.0.0.jsonld` | DS-ONT v3.0.0 | Endeavour brand tokens (90+), semantic mapping | Done |
 | `eoms-app-skeleton-v1.0.0.jsonld` | DS-ONT v3.0.0 | 8 zones, 6 nav items, 10 actions, zone components | Done |
 | `pfi-w4m-eoms-graph-scope.json` | — | 25 visible ontologies, PRODUCT scope | Done |
+| `eoms-emc-instance-v1.0.0.jsonld` | EMC-ONT v5.2.0 | EOMS composed graph: 5 ontologies, 8 join points, 3 scope rules | Done |
+| `eoms-sop-instances-v1.0.0.json` | SOP-ONT | Sales pipeline: 5 accounts, 6 enquiries, 4 quotations, 3 captures, 3 validations, 3 credit checks | Done |
 | `vp-eoms-instance-v1.0.0.jsonld` | VP-ONT | Endeavour value propositions, export buyer ICPs | Future |
 | `rrr-eoms-instance-v1.0.0.jsonld` | RRR-ONT | Endeavour roles, RACI for order management | Future |
-| `eoms-emc-instance-v1.0.0.jsonld` | EMC-ONT v5.0.0 | EOMS composed graph spec, join points, data slices | Future |
 | `eoms-lsc-instance-v1.0.0.jsonld` | LSC-ONT | Endeavour export supply corridors (AU → destinations) | Future |
+| OFM instances | OFM-ONT | Fulfilment-side: sales orders, SLAs, dispatch (pending SOP→OFM handoff) | Future |
 
 > **Why this matters:** Each graph instance is specific to Endeavour Meats (END) and their operations — not shared with WWG or other W4M products. As EOMS matures beyond Phase 1, these instances enable AI agents, supply chain intelligence, FX integration, and executive analytics to plug in via the EMC cascade without rework. The data model is deliberately designed for this progression.
+>
+> **Review & Inspection:** The EOMS graph is available for interactive review in the [Ontology Visualiser](https://ajrmooreuk.github.io/Azlan-EA-AAA/PBS/TOOLS/ontology-visualiser/browser-viewer.html) — select PFI-W4M-EOMS scope to view the composed graph with SOP→OFM→LSC bridge chain, customer foundation, and all join points.
 
 ### PFC Pattern References
 
