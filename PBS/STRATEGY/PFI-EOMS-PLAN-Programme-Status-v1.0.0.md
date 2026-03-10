@@ -20,10 +20,10 @@
 | **Epics Complete** | 1 (Epic 0 — G1 passed) |
 | **Features In Scope** | 18 |
 | **Features Complete** | 5 / 18 (F0.1–F0.5) |
-| **Stories Complete** | 13 / 56 |
+| **Stories Complete** | 13 / 57 |
 | **Next Gate** | G2 — Core Feature Complete |
 | **Blockers** | Client Supabase setup — needs shared Gmail (discuss with FB) |
-| **Key Decisions This Week** | Epic 8 added. Test data CSV imported. File-based JSON before DB — early client visualisation. Client Supabase ownership flagged P1. EOMS custom graph + EMC instance created — available in Ontology Visualiser for review. |
+| **Key Decisions This Week** | Epic 8 added. Test data CSV imported. File-based JSON before DB — early client visualisation. Client Supabase ownership flagged P1. EOMS custom graph + EMC instance created — available in Ontology Visualiser for review. PE-Process Definition in PE-ONT added to EOMS graph scope. |
 
 ### Status History
 
@@ -31,7 +31,7 @@
 |------|------|-----|-------|
 | W1 | 24 Feb 2026 | GREEN | Epic 0 started. Env + DB setup. |
 | W2 | 3 Mar 2026 | GREEN | G1 passed. Auth, data import, design tokens. |
-| W3 | 10 Mar 2026 | AMBER | Epic 8 added. DS-ONT instance + skeleton created. Test data CSV imported. File-based JSON approach adopted. EOMS custom graph created (EMC instance + SOP instances) — Ontology Visualiser available for review and inspection. Client Supabase setup — resolving in meeting with FB. |
+| W3 | 10 Mar 2026 | AMBER | Epic 8 added. DS-ONT instance + skeleton created. Test data CSV imported. File-based JSON approach adopted. EOMS custom graph created (EMC instance + SOP instances) — Ontology Visualiser available for review and inspection. PE-Process Definition in PE-ONT added to EOMS graph. TDD & Process Definition feature (F0.6) tracked. Client Supabase setup — resolving in meeting with FB. |
 
 ---
 
@@ -79,6 +79,7 @@
 | | US-0.6.1: Technical Design Document (TDD) — architecture, data model, API contracts | Must | Not Started | Derived from PRD + HLD |
 | | US-0.6.2: EOMS Process Definition — order lifecycle, state transitions, business rules | Must | Not Started | Derived from PRD epics/stories |
 | | US-0.6.3: Map PRD user stories → TDD technical specifications | Must | Not Started | Traceability: PRD → TDD |
+| | US-0.6.4: Create PE-Process Definition in PE-ONT for EOMS graph instance | Must | **In Progress** | `pe-eoms-process-instance-v1.0.0.jsonld` — Endeavour order lifecycle process model for EMC graph |
 
 ---
 
@@ -388,6 +389,7 @@ flowchart LR
 | 9 | VSOM/OKR/VP Roadmap | 1.0 | Draft | OKRs, KPIs, VP, epic roadmap | [Link](../PROPOSALS/EOMS_VSOM_OKR_VP_ROADMAP.md) |
 | 10 | App Framework & DS Brief | 1.0.0 | Draft | Epic 8 specification | [Link](PFI-EOMS-BRIEF-Application-Framework-Design-System-Integration-v1.0.0.md) |
 | 11 | CI/CD Programme Linkages | 1.0.0 | Candidate | Unified change control | [Link](BRIEFING-PBS-PFC-CICD-Programme-Roadmap-Linkages.md) |
+| 12 | Process Workflow & User Journeys | 1.0.0 | Draft | PE-ONT process, mermaid diagrams, TDD spec | [Link](PFI-EOMS-PROC-Order-Management-Process-Workflow-v1.0.0.md) |
 
 ### Governance
 
@@ -408,6 +410,7 @@ flowchart LR
 | EMC Instance (Graph) | 1.0.0 | [Link](../PBS-ONT-PFI-EOMS/eoms-emc-instance-v1.0.0.json) |
 | SOP Instances (Sales Pipeline) | 1.0.0 | [Link](../PBS-ONT-PFI-EOMS/eoms-sop-instances-v1.0.0.json) |
 | Graph Scope | 1.0.0 | [Link](../PBS-ONT-PFI-EOMS/pfi-w4m-eoms-graph-scope.json) |
+| PE-ONT Process Instance | 1.0.0 | [Link](../../instance-data/ontologies/PE-ONT/pe-eoms-process-instance-v1.0.0.jsonld) |
 
 ### W4M-EOMS Custom Graph Instance — Future Integration Potential
 
@@ -421,6 +424,9 @@ EOMS has its own PFI graph instance (`pfi-w4m-eoms`) — distinct from other W4M
 | `pfi-w4m-eoms-graph-scope.json` | — | 25 visible ontologies, PRODUCT scope | Done |
 | `eoms-emc-instance-v1.0.0.jsonld` | EMC-ONT v5.2.0 | EOMS composed graph: 5 ontologies, 8 join points, 3 scope rules | Done |
 | `eoms-sop-instances-v1.0.0.json` | SOP-ONT | Sales pipeline: 5 accounts, 6 enquiries, 4 quotations, 3 captures, 3 validations, 3 credit checks | Done |
+| `pe-eoms-process-instance-v1.0.0.jsonld` | PE-ONT v4.0.0 | Process model: 7 phases, 17 activities, 53 stories with testContracts, 5 gates (G1–G5). TDD backbone. | Done |
+| `eoms-test-data-graph-mapping-v1.0.0.json` | SOP-ONT | Test data → SOP graph mapping: 19 CSV columns → SOP entities → 6 DB tables | Done |
+| `PFI-EOMS-PROC-*-v1.0.0.md` | PE-ONT | Process workflow: mermaid diagrams, user journeys, TDD flow, zone architecture | Done |
 | `vp-eoms-instance-v1.0.0.jsonld` | VP-ONT | Endeavour value propositions, export buyer ICPs | Future |
 | `rrr-eoms-instance-v1.0.0.jsonld` | RRR-ONT | Endeavour roles, RACI for order management | Future |
 | `eoms-lsc-instance-v1.0.0.jsonld` | LSC-ONT | Endeavour export supply corridors (AU → destinations) | Future |
@@ -501,7 +507,7 @@ Items removed during the lean scope approval (19 Feb 2026). Documented for trace
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0.0 | 10 Mar 2026 | Design Director + Claude Code | Initial plan: 7 epics, 17 features, 53 stories. Epic 8 added. Deferred items in appendices. |
+| 1.0.0 | 10 Mar 2026 | Design Director + Claude Code | Initial plan: 7 epics, 17 features, 53 stories. Epic 8 added. F0.6 TDD & Process Definition added (4 stories incl. PE-ONT process instance). Graph instances tracked. Deferred items in appendices. |
 
 ---
 

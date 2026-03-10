@@ -1,0 +1,358 @@
+{
+  "@context": {
+    "sop": "https://oaa-ontology.org/v6/sales-order-processing/",
+    "ofm": "https://oaa-ontology.org/v6/order-fulfilment/",
+    "lsc": "https://oaa-ontology.org/v6/logistics/",
+    "org": "https://platformcore.io/ontology/org/",
+    "org-ctx": "https://platformcore.io/ontology/org-context/"
+  },
+  "@type": "DataGraphMapping",
+  "@id": "eoms-test-data-graph-mapping-v1.0.0",
+  "metadata": {
+    "title": "EOMS Test Data → SOP Graph Mapping",
+    "version": "1.0.0",
+    "created": "2026-03-10",
+    "sourceFile": "PBS/Data-Test/EOMS ANON2 Ord-Anon Sale Order Item Report - EOMS Test Data Anonymised.csv",
+    "sourceRows": 7635,
+    "sourceColumns": 19,
+    "purpose": "Maps anonymised test CSV columns to SOP-ONT entities and proposes Supabase database table definitions. Validates that the sales order data model covers the real-world data structure.",
+    "dataProfile": {
+      "distinctOrders": "~7,330 (SO-No-* pattern)",
+      "distinctBuyers": "~7,364 (Buyer_* aliases — anonymised)",
+      "exporter": "ENDEAVOUR MEATS PTY LTD (single exporter)",
+      "transportModes": ["Sea", "Air", "Road"],
+      "currencies": ["USD", "AUD", "GBP", "NZD", "CAD", "CHF", "SGD"],
+      "loadingPorts": ["MELBOURNE", "SYDNEY", "BRISBANE", "ADELAIDE", "CHRISTCHURCH", "FREMANTLE", "DARWIN", "BURNIE", "LYTTELTON", "TAURANGA", "FELIXSTOWE", "LONDON GATEWAY PORT"],
+      "destinationCountries": 35,
+      "productTypes": "Frozen/Chilled beef, veal, lamb, goat — HALAL certified"
+    }
+  },
+
+  "columnToEntityMapping": [
+    {
+      "csvColumn": "ID",
+      "csvExample": "SO-00001",
+      "sopEntity": null,
+      "dbTable": "order_lines",
+      "dbColumn": "line_id",
+      "dbType": "TEXT PRIMARY KEY",
+      "notes": "Unique line item ID — sequential across all orders"
+    },
+    {
+      "csvColumn": "Order-Anon",
+      "csvExample": "SO-No-76266",
+      "sopEntity": "sop:SalesOrderProcess",
+      "sopProperty": "processId",
+      "dbTable": "orders",
+      "dbColumn": "order_number",
+      "dbType": "TEXT NOT NULL UNIQUE",
+      "notes": "Anonymised order number — groups line items into orders. FK from order_lines."
+    },
+    {
+      "csvColumn": "Order Description",
+      "csvExample": "SEA",
+      "sopEntity": "sop:SalesChannel",
+      "sopProperty": "channelType",
+      "dbTable": "orders",
+      "dbColumn": "transport_mode",
+      "dbType": "TEXT NOT NULL CHECK (transport_mode IN ('Sea', 'Air', 'Road'))",
+      "notes": "Maps to SalesChannel.channelType — Sea/Air/Road. In CSV this is in description column."
+    },
+    {
+      "csvColumn": "Exporter",
+      "csvExample": "ENDEAVOUR MEATS PTY LTD",
+      "sopEntity": "org:Organization",
+      "sopProperty": "organizationName",
+      "dbTable": "organizations",
+      "dbColumn": "name",
+      "dbType": "TEXT NOT NULL",
+      "notes": "Single exporter in test data. Maps to the ORG-ONT Organization entity. System-level config, not per-order."
+    },
+    {
+      "csvColumn": "Buyer Name Alias",
+      "csvExample": "Buyer_41984",
+      "sopEntity": "sop:CustomerAccount",
+      "sopProperty": "accountName",
+      "dbTable": "customers",
+      "dbColumn": "buyer_alias",
+      "dbType": "TEXT NOT NULL",
+      "notes": "Anonymised buyer. Maps to SOP CustomerAccount. In production: full customer name, ABN, address."
+    },
+    {
+      "csvColumn": "Transport Mode",
+      "csvExample": "Sea",
+      "sopEntity": "sop:SalesChannel",
+      "sopProperty": "channelType",
+      "dbTable": "orders",
+      "dbColumn": "transport_mode",
+      "dbType": "TEXT NOT NULL",
+      "notes": "Duplicate of Order Description for transport. Sea/Air/Road."
+    },
+    {
+      "csvColumn": "Vessel/Aircraft",
+      "csvExample": "(often empty)",
+      "sopEntity": "lsc:Shipment",
+      "sopProperty": "vesselName",
+      "dbTable": "shipments",
+      "dbColumn": "vessel_name",
+      "dbType": "TEXT",
+      "notes": "Maps to LSC-ONT Shipment entity. Optional — often empty in test data."
+    },
+    {
+      "csvColumn": "Voyage/Flight no",
+      "csvExample": "(often empty)",
+      "sopEntity": "lsc:Shipment",
+      "sopProperty": "voyageNumber",
+      "dbTable": "shipments",
+      "dbColumn": "voyage_number",
+      "dbType": "TEXT",
+      "notes": "Maps to LSC-ONT Shipment.voyageNumber. Optional."
+    },
+    {
+      "csvColumn": "Loading Port",
+      "csvExample": "MELBOURNE",
+      "sopEntity": "lsc:SupplyChain",
+      "sopProperty": "originPort",
+      "dbTable": "orders",
+      "dbColumn": "loading_port",
+      "dbType": "TEXT NOT NULL",
+      "notes": "Source port — primarily Australian ports. Maps to LSC SupplyChain corridor origin."
+    },
+    {
+      "csvColumn": "Discharge Port",
+      "csvExample": "TIANJIN",
+      "sopEntity": "lsc:SupplyChain",
+      "sopProperty": "destinationPort",
+      "dbTable": "orders",
+      "dbColumn": "discharge_port",
+      "dbType": "TEXT NOT NULL",
+      "notes": "Destination port. Maps to LSC SupplyChain corridor destination."
+    },
+    {
+      "csvColumn": "Destination Country",
+      "csvExample": "CHINA",
+      "sopEntity": "org-ctx:MarketSegment",
+      "sopProperty": "segmentName",
+      "dbTable": "orders",
+      "dbColumn": "destination_country",
+      "dbType": "TEXT NOT NULL",
+      "notes": "35 destination countries. Maps to ORG-CONTEXT MarketSegment for sales analytics."
+    },
+    {
+      "csvColumn": "Departure Date",
+      "csvExample": "(often empty in test data)",
+      "sopEntity": "sop:OrderCapture",
+      "sopProperty": "captureDate",
+      "dbTable": "orders",
+      "dbColumn": "departure_date",
+      "dbType": "DATE",
+      "notes": "Planned departure. Often empty in anonymised data. Required in production."
+    },
+    {
+      "csvColumn": "Currency",
+      "csvExample": "USD",
+      "sopEntity": "sop:PricingAgreement",
+      "sopProperty": "currency",
+      "dbTable": "orders",
+      "dbColumn": "currency",
+      "dbType": "TEXT NOT NULL CHECK (currency IN ('USD','AUD','GBP','NZD','CAD','CHF','SGD'))",
+      "notes": "7 currencies in test data. Maps to SOP PricingAgreement.currency."
+    },
+    {
+      "csvColumn": "Code",
+      "csvExample": "GHA-6222CF",
+      "sopEntity": "org-ctx:Product",
+      "sopProperty": "productCode",
+      "dbTable": "products",
+      "dbColumn": "product_code",
+      "dbType": "TEXT NOT NULL UNIQUE",
+      "notes": "Product catalogue code. Maps to ORG-CONTEXT Product. 7,816 distinct codes in catalogue."
+    },
+    {
+      "csvColumn": "Description",
+      "csvExample": "FROZEN BONE IN BEEF NECK BONE, HALAL",
+      "sopEntity": "org-ctx:Product",
+      "sopProperty": "productName",
+      "dbTable": "products",
+      "dbColumn": "description",
+      "dbType": "TEXT NOT NULL",
+      "notes": "Product description. Includes preparation state (Frozen/Chilled), cut, and certification (HALAL)."
+    },
+    {
+      "csvColumn": "Quantity",
+      "csvExample": "25000",
+      "sopEntity": "sop:QuotationLine",
+      "sopProperty": "quantity",
+      "dbTable": "order_lines",
+      "dbColumn": "quantity",
+      "dbType": "NUMERIC NOT NULL CHECK (quantity > 0)",
+      "notes": "Order line quantity. Maps to SOP QuotationLine.quantity."
+    },
+    {
+      "csvColumn": "UOM",
+      "csvExample": "KG",
+      "sopEntity": "sop:QuotationLine",
+      "sopProperty": "unitOfMeasure",
+      "dbTable": "order_lines",
+      "dbColumn": "uom",
+      "dbType": "TEXT NOT NULL DEFAULT 'KG'",
+      "notes": "Unit of measure — predominantly KG. Maps to QuotationLine.unitOfMeasure."
+    },
+    {
+      "csvColumn": "Unit Price",
+      "csvExample": "2.05",
+      "sopEntity": "sop:QuotationLine",
+      "sopProperty": "unitPrice",
+      "dbTable": "order_lines",
+      "dbColumn": "unit_price",
+      "dbType": "NUMERIC(12,4) NOT NULL CHECK (unit_price >= 0)",
+      "notes": "Price per UOM in order currency. Maps to SOP QuotationLine.unitPrice."
+    },
+    {
+      "csvColumn": "Item Value",
+      "csvExample": "51250",
+      "sopEntity": "sop:QuotationLine",
+      "sopProperty": "lineValue",
+      "dbTable": "order_lines",
+      "dbColumn": "line_value",
+      "dbType": "NUMERIC(14,2) NOT NULL",
+      "notes": "Computed: quantity × unitPrice. Maps to SOP QuotationLine.lineValue. Can be computed column."
+    }
+  ],
+
+  "proposedDatabaseSchema": {
+    "description": "Supabase PostgreSQL table definitions derived from the SOP graph mapping. These tables mirror the SOP-ONT entity structure while being practical for the EOMS application.",
+
+    "tables": [
+      {
+        "tableName": "organizations",
+        "sopEntity": "org:Organization",
+        "description": "Exporter organisations (initially just Endeavour Meats)",
+        "columns": [
+          {"name": "id", "type": "UUID PRIMARY KEY DEFAULT gen_random_uuid()"},
+          {"name": "name", "type": "TEXT NOT NULL"},
+          {"name": "abn", "type": "TEXT"},
+          {"name": "country", "type": "TEXT NOT NULL DEFAULT 'Australia'"},
+          {"name": "created_at", "type": "TIMESTAMPTZ DEFAULT now()"}
+        ]
+      },
+      {
+        "tableName": "customers",
+        "sopEntity": "sop:CustomerAccount",
+        "description": "Buyer/customer accounts — maps to SOP CustomerAccount",
+        "columns": [
+          {"name": "id", "type": "UUID PRIMARY KEY DEFAULT gen_random_uuid()"},
+          {"name": "buyer_alias", "type": "TEXT NOT NULL", "note": "Anonymised in test; real name in production"},
+          {"name": "buyer_name", "type": "TEXT", "note": "Full name — null in anonymised data"},
+          {"name": "country", "type": "TEXT"},
+          {"name": "market_segment", "type": "TEXT", "sopRef": "org-ctx:MarketSegment"},
+          {"name": "account_tier", "type": "TEXT CHECK (account_tier IN ('strategic','key','standard','prospect'))"},
+          {"name": "credit_limit", "type": "NUMERIC(14,2)"},
+          {"name": "organization_id", "type": "UUID REFERENCES organizations(id)"},
+          {"name": "created_at", "type": "TIMESTAMPTZ DEFAULT now()"}
+        ]
+      },
+      {
+        "tableName": "products",
+        "sopEntity": "org-ctx:Product",
+        "description": "Product catalogue — 7,816 codes. Maps to ORG-CONTEXT Product.",
+        "columns": [
+          {"name": "id", "type": "UUID PRIMARY KEY DEFAULT gen_random_uuid()"},
+          {"name": "product_code", "type": "TEXT NOT NULL UNIQUE"},
+          {"name": "description", "type": "TEXT NOT NULL"},
+          {"name": "brand", "type": "TEXT"},
+          {"name": "product_state", "type": "TEXT", "note": "Frozen, Chilled, etc."},
+          {"name": "feed_type", "type": "TEXT", "note": "Grain Fed, Grass Fed, etc."},
+          {"name": "halal_certified", "type": "BOOLEAN DEFAULT false"},
+          {"name": "market_eligibility", "type": "JSONB", "note": "Array of eligible destination countries"},
+          {"name": "created_at", "type": "TIMESTAMPTZ DEFAULT now()"}
+        ]
+      },
+      {
+        "tableName": "orders",
+        "sopEntity": "sop:SalesOrderProcess + sop:OrderCapture",
+        "description": "Sales orders — the core transactional entity. Maps to SOP SalesOrderProcess.",
+        "columns": [
+          {"name": "id", "type": "UUID PRIMARY KEY DEFAULT gen_random_uuid()"},
+          {"name": "order_number", "type": "TEXT NOT NULL UNIQUE", "sopRef": "sop:SalesOrderProcess.processId"},
+          {"name": "status", "type": "TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','complete','exported','cancelled'))"},
+          {"name": "customer_id", "type": "UUID NOT NULL REFERENCES customers(id)", "sopRef": "sop:CustomerAccount"},
+          {"name": "organization_id", "type": "UUID NOT NULL REFERENCES organizations(id)"},
+          {"name": "transport_mode", "type": "TEXT NOT NULL CHECK (transport_mode IN ('Sea','Air','Road'))", "sopRef": "sop:SalesChannel.channelType"},
+          {"name": "loading_port", "type": "TEXT NOT NULL", "sopRef": "lsc:SupplyChain.originPort"},
+          {"name": "discharge_port", "type": "TEXT NOT NULL", "sopRef": "lsc:SupplyChain.destinationPort"},
+          {"name": "destination_country", "type": "TEXT NOT NULL", "sopRef": "org-ctx:MarketSegment"},
+          {"name": "currency", "type": "TEXT NOT NULL", "sopRef": "sop:PricingAgreement.currency"},
+          {"name": "departure_date", "type": "DATE"},
+          {"name": "vessel_name", "type": "TEXT", "sopRef": "lsc:Shipment.vesselName"},
+          {"name": "voyage_number", "type": "TEXT", "sopRef": "lsc:Shipment.voyageNumber"},
+          {"name": "incoterms", "type": "TEXT"},
+          {"name": "container_type", "type": "TEXT"},
+          {"name": "total_value", "type": "NUMERIC(16,2)", "note": "Computed from order_lines sum"},
+          {"name": "total_quantity", "type": "NUMERIC(14,2)", "note": "Computed from order_lines sum"},
+          {"name": "validation_status", "type": "TEXT CHECK (validation_status IN ('pending','passed','failed'))", "sopRef": "sop:OrderValidation.validationOutcome"},
+          {"name": "credit_check_status", "type": "TEXT CHECK (credit_check_status IN ('pending','approved','declined','not_required'))", "sopRef": "sop:CreditCheck.checkOutcome"},
+          {"name": "exported_at", "type": "TIMESTAMPTZ"},
+          {"name": "created_by", "type": "UUID REFERENCES auth.users(id)"},
+          {"name": "created_at", "type": "TIMESTAMPTZ DEFAULT now()"},
+          {"name": "updated_at", "type": "TIMESTAMPTZ DEFAULT now()"}
+        ],
+        "indexes": [
+          "CREATE INDEX idx_orders_status ON orders(status)",
+          "CREATE INDEX idx_orders_customer ON orders(customer_id)",
+          "CREATE INDEX idx_orders_country ON orders(destination_country)",
+          "CREATE INDEX idx_orders_created ON orders(created_at DESC)"
+        ],
+        "rls": "auth.uid() = created_by OR user_role = 'admin'"
+      },
+      {
+        "tableName": "order_lines",
+        "sopEntity": "sop:QuotationLine",
+        "description": "Order line items — each row in the CSV maps to one order_line. Maps to SOP QuotationLine.",
+        "columns": [
+          {"name": "id", "type": "UUID PRIMARY KEY DEFAULT gen_random_uuid()"},
+          {"name": "line_id", "type": "TEXT NOT NULL UNIQUE", "note": "Original CSV ID (SO-00001)"},
+          {"name": "order_id", "type": "UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE"},
+          {"name": "product_id", "type": "UUID NOT NULL REFERENCES products(id)", "sopRef": "org-ctx:Product"},
+          {"name": "product_code", "type": "TEXT NOT NULL", "note": "Denormalised for display performance"},
+          {"name": "description", "type": "TEXT NOT NULL"},
+          {"name": "quantity", "type": "NUMERIC(14,2) NOT NULL CHECK (quantity > 0)", "sopRef": "sop:QuotationLine.quantity"},
+          {"name": "uom", "type": "TEXT NOT NULL DEFAULT 'KG'", "sopRef": "sop:QuotationLine.unitOfMeasure"},
+          {"name": "unit_price", "type": "NUMERIC(12,4) NOT NULL CHECK (unit_price >= 0)", "sopRef": "sop:QuotationLine.unitPrice"},
+          {"name": "line_value", "type": "NUMERIC(14,2) GENERATED ALWAYS AS (quantity * unit_price) STORED", "sopRef": "sop:QuotationLine.lineValue"},
+          {"name": "created_at", "type": "TIMESTAMPTZ DEFAULT now()"}
+        ],
+        "indexes": [
+          "CREATE INDEX idx_order_lines_order ON order_lines(order_id)",
+          "CREATE INDEX idx_order_lines_product ON order_lines(product_id)"
+        ],
+        "rls": "EXISTS (SELECT 1 FROM orders WHERE orders.id = order_lines.order_id AND (orders.created_by = auth.uid() OR user_role = 'admin'))"
+      },
+      {
+        "tableName": "order_audit_log",
+        "sopEntity": null,
+        "description": "Audit trail for order mutations — tracks status transitions",
+        "columns": [
+          {"name": "id", "type": "UUID PRIMARY KEY DEFAULT gen_random_uuid()"},
+          {"name": "order_id", "type": "UUID NOT NULL REFERENCES orders(id)"},
+          {"name": "action", "type": "TEXT NOT NULL"},
+          {"name": "old_status", "type": "TEXT"},
+          {"name": "new_status", "type": "TEXT"},
+          {"name": "performed_by", "type": "UUID REFERENCES auth.users(id)"},
+          {"name": "performed_at", "type": "TIMESTAMPTZ DEFAULT now()"},
+          {"name": "details", "type": "JSONB"}
+        ]
+      }
+    ],
+
+    "validationNotes": [
+      "All 19 CSV columns mapped to SOP-ONT entities or proposed DB columns",
+      "5 SOP entities covered: SalesOrderProcess, CustomerAccount, QuotationLine, SalesChannel, OrderCapture",
+      "3 cross-ontology entities covered: org:Organization, org-ctx:Product, org-ctx:MarketSegment",
+      "2 LSC entities covered: SupplyChain (ports/corridors), Shipment (vessel/voyage)",
+      "line_value is GENERATED ALWAYS — enforces quantity × unitPrice integrity",
+      "RLS policies enforce per-user data isolation (Trader sees own orders; Admin sees all)",
+      "Audit log tracks order lifecycle transitions for compliance"
+    ]
+  }
+}

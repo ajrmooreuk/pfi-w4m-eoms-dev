@@ -1,0 +1,680 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "pe": "https://platformcore.io/ontology/pe/",
+    "sop": "https://oaa-ontology.org/v6/sales-order-processing/",
+    "ofm": "https://oaa-ontology.org/v6/order-fulfilment/",
+    "lsc": "https://oaa-ontology.org/v6/logistics/",
+    "emc": "https://platformcore.io/ontology/emc/",
+    "ds": "https://platformcore.io/ontology/ds/",
+    "oaa": "https://oaa-ontology.org/v6/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@type": "oaa:OntologyInstance",
+  "@id": "pe:eoms-process-instance-v1.0.0",
+  "oaa:instanceOf": "pe:Process",
+  "oaa:schemaVersion": "7.0.0",
+  "oaa:instanceVersion": "1.0.0",
+  "oaa:vertical": "export-order-management",
+  "oaa:clientRef": "emc:InstanceConfiguration-W4M-EOMS",
+  "oaa:created": "2026-03-10",
+  "oaa:description": "PE-ONT process instance for W4M EOMS — maps the complete programme plan (7 epics, 17 features, 53 stories) to PE-ONT Process, ProcessPhase, ProcessGate, and Activity entities. Enables TDD: each feature/story becomes a testable process activity with acceptance criteria, input/output contracts, and gate conditions. SOP-ONT entities are the domain model; this PE instance is the process execution model that drives builder test generation.",
+
+  "metadata": {
+    "title": "W4M-EOMS PE Process Instance — Order Management Lifecycle",
+    "version": "1.0.0",
+    "created": "2026-03-10",
+    "author": "PF-Core Platform Team",
+    "owningInstance": "PFI-W4M-EOMS",
+    "sourceOntology": "PE-ONT v4.0.0",
+    "oaaVersion": "7.0.0",
+    "programmeRef": "PFI-EOMS-PLAN-Programme-Status-v1.0.0",
+    "goLiveTarget": "2026-04-18",
+    "tddNote": "Every Activity entity below has acceptanceCriteria and testContract fields. The builder uses these to generate: (1) unit tests per story, (2) integration tests per feature, (3) gate tests per epic. ProcessGate entities define the quality thresholds that must pass before phase progression."
+  },
+
+  "entities": [
+
+    {"_section": "=== ROOT PROCESS: EOMS ORDER MANAGEMENT PLATFORM ==="},
+
+    {
+      "@type": "pe:Process",
+      "@id": "pe:eoms-process-root",
+      "processId": "EOMS-PROC-001",
+      "processName": "EOMS Order Management Platform Delivery",
+      "processType": "development",
+      "description": "End-to-end delivery of the Endeavour Order Management System — from foundation infrastructure through order management, product catalogue, export, UAT, and go-live. Maps 1:1 to the EOMS programme plan. Each epic = ProcessPhase, each feature = Activity group, each story = Activity.",
+      "businessObjective": "Replace manual Excel-based export order management with AI-enabled platform supporting 2x revenue growth ($600M→$1.2Bn) without proportional headcount increase",
+      "scope": "Phase 1: Order creation, product catalogue, order export, UAT, deployment. Excludes FX (Phase 3), AI agents (Phase 2), dashboards (Phase 4).",
+      "owner": "wings4mind.ai",
+      "status": "active",
+      "version": "1.0.0",
+      "estimatedDuration": "P8W",
+      "automationLevel": 40,
+      "sopGraphRef": "sop:SalesOrderProcess",
+      "emcInstanceRef": "emc:InstanceConfiguration-W4M-EOMS"
+    },
+
+    {"_section": "=== PHASE 0: FOUNDATION & INFRASTRUCTURE (Epic 0) ==="},
+
+    {
+      "@type": "pe:ProcessPhase",
+      "@id": "pe:eoms-phase-0-foundation",
+      "phaseId": "EOMS-PH-0",
+      "phaseName": "Foundation & Infrastructure",
+      "epicRef": "Epic 0",
+      "phaseOrder": 1,
+      "status": "completed",
+      "startDate": "2026-02-23",
+      "endDate": "2026-03-07",
+      "description": "Environment setup, database schema, authentication, design system, data import. Gate G1 passed.",
+      "deliverables": ["Supabase project", "DB schemas (order/product/customer)", "RLS policies", "Supabase Auth", "RBAC (Trader/Admin)", "Endeavour DS tokens", "Test data imported (7,635 lines)"],
+      "pbsRefs": ["PBS-1.0", "PBS-2.0", "PBS-6.0"]
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f0.1-env-setup",
+      "activityId": "F0.1",
+      "activityName": "Environment Setup",
+      "featureRef": "F0.1",
+      "status": "in_progress",
+      "description": "Set up Supabase, Vercel, dev/staging/prod environments",
+      "stories": [
+        {"storyId": "US-0.1.1", "name": "Set up Supabase project (Sydney)", "status": "done", "testContract": {"type": "integration", "validates": "Supabase connection from Next.js API route"}},
+        {"storyId": "US-0.1.2", "name": "Set up Vercel deployment pipeline", "status": "done", "testContract": {"type": "integration", "validates": "Vercel deploy on push to main"}},
+        {"storyId": "US-0.1.3", "name": "Configure dev/staging/prod environments", "status": "done", "testContract": {"type": "integration", "validates": "Environment variable isolation per stage"}},
+        {"storyId": "US-0.1.4", "name": "Client Supabase project setup — shared Gmail", "status": "blocked", "blocker": "Needs shared Gmail for client-owned Supabase", "testContract": {"type": "integration", "validates": "Client Supabase accessible with RLS"}}
+      ],
+      "acceptanceCriteria": "All environments reachable; Supabase responds; Vercel deploys on push"
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f0.2-db-schema",
+      "activityId": "F0.2",
+      "activityName": "Database Schema",
+      "featureRef": "F0.2",
+      "status": "completed",
+      "description": "Order, product, customer DB schemas with RLS and audit logging",
+      "sopEntityMapping": ["sop:CustomerAccount → customers table", "sop:SalesOrderProcess → orders table", "sop:QuotationLine → order_lines table"],
+      "stories": [
+        {"storyId": "US-0.2.1", "name": "Implement order/product/customer DB schemas", "status": "done", "testContract": {"type": "unit", "validates": "Schema DDL executes without error; tables exist"}},
+        {"storyId": "US-0.2.2", "name": "Configure Row Level Security policies", "status": "done", "testContract": {"type": "integration", "validates": "RLS blocks cross-tenant reads"}},
+        {"storyId": "US-0.2.3", "name": "Set up audit logging tables", "status": "done", "testContract": {"type": "integration", "validates": "INSERT/UPDATE triggers fire audit rows"}}
+      ],
+      "acceptanceCriteria": "All tables created; RLS active; audit triggers fire on mutations"
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f0.3-auth",
+      "activityId": "F0.3",
+      "activityName": "Authentication & RBAC",
+      "featureRef": "F0.3",
+      "status": "completed",
+      "description": "Supabase Auth with email/password and 2-role RBAC (Trader, Admin)",
+      "stories": [
+        {"storyId": "US-0.3.1", "name": "Implement Supabase Auth (email/password)", "status": "done", "testContract": {"type": "integration", "validates": "Sign-up, sign-in, sign-out flows work"}},
+        {"storyId": "US-0.3.2", "name": "Configure RBAC (Trader, Admin)", "status": "done", "testContract": {"type": "integration", "validates": "Trader cannot access admin routes; Admin can access all"}}
+      ],
+      "acceptanceCriteria": "Auth flow works end-to-end; RBAC enforced on protected routes"
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f0.4-design-system",
+      "activityId": "F0.4",
+      "activityName": "Design System",
+      "featureRef": "F0.4",
+      "status": "completed",
+      "description": "Endeavour-DS brand tokens and shadcn/ui component library",
+      "dsInstanceRef": "ds:eoms-endeavour-ds-instance-v1.0.0",
+      "stories": [
+        {"storyId": "US-0.4.1", "name": "Create Endeavour-DS brand tokens", "status": "done", "testContract": {"type": "unit", "validates": "90+ tokens parse from JSONLD; semantic tokens resolve"}},
+        {"storyId": "US-0.4.2", "name": "Build core shadcn/ui component library", "status": "done", "testContract": {"type": "unit", "validates": "Button, Input, Card, Dialog render with DS tokens"}}
+      ],
+      "acceptanceCriteria": "DS-ONT instance valid; shadcn components render with Endeavour branding"
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f0.5-data-import",
+      "activityId": "F0.5",
+      "activityName": "Data Import",
+      "featureRef": "F0.5",
+      "status": "completed",
+      "description": "Import product catalogue (7,816 codes) and anonymised test orders (7,635 lines)",
+      "sopEntityMapping": ["CSV.Buyer_Name_Alias → sop:CustomerAccount", "CSV.Order-Anon → sop:SalesOrderProcess", "CSV.Code+Description+Quantity+UnitPrice → sop:QuotationLine"],
+      "stories": [
+        {"storyId": "US-0.5.1", "name": "Import product catalogue (7,816 codes)", "status": "done", "testContract": {"type": "integration", "validates": "7,816 products in DB; searchable by code and description"}},
+        {"storyId": "US-0.5.2", "name": "Import sample customer data", "status": "done", "testContract": {"type": "integration", "validates": "Customer records match distinct Buyer aliases from CSV"}},
+        {"storyId": "US-0.5.4", "name": "Import anonymised sale order test data (7,635 lines)", "status": "done", "testContract": {"type": "integration", "validates": "7,635 order line items loaded; totals match CSV"}}
+      ],
+      "acceptanceCriteria": "Product catalogue searchable; customer data loaded; order lines match CSV count"
+    },
+
+    {"_section": "=== GATE G1: PROJECT KICKOFF — PASSED ==="},
+
+    {
+      "@type": "pe:ProcessGate",
+      "@id": "pe:eoms-gate-g1",
+      "gateId": "EOMS-G1",
+      "gateName": "G1: Project Kickoff",
+      "gateType": "completeness",
+      "phaseRef": "pe:eoms-phase-0-foundation",
+      "criteria": "Scope approved; accounts provisioned; design tokens agreed; test data imported",
+      "threshold": 90,
+      "automated": false,
+      "blockingFactor": "blocking",
+      "result": "PASS",
+      "score": 95,
+      "reviewDate": "2026-03-07",
+      "approver": "CFO/COO",
+      "reviewNotes": "Phase 1 approved 22 Feb 2026. All F0.x features complete except client Supabase (P1 blocker — non-blocking for dev work)."
+    },
+
+    {"_section": "=== PHASE 1: ORDER MANAGEMENT (Epic 1) ==="},
+
+    {
+      "@type": "pe:ProcessPhase",
+      "@id": "pe:eoms-phase-1-order-mgmt",
+      "phaseId": "EOMS-PH-1",
+      "phaseName": "Order Management",
+      "epicRef": "Epic 1",
+      "phaseOrder": 2,
+      "status": "in_progress",
+      "startDate": "2026-03-10",
+      "endDate": null,
+      "description": "Order creation wizard, line items, order lifecycle. File-based JSON before DB. Core SOP-ONT process execution.",
+      "deliverables": ["Order creation wizard", "Product search in order context", "Order lifecycle (Draft→Complete→Exported)", "Order list with status filtering"],
+      "pbsRefs": ["PBS-2.0", "PBS-3.0"],
+      "sopProcessMapping": "SalesOrderProcess lifecycle: CustomerEnquiry → SalesQuotation → OrderCapture → OrderValidation → CreditCheck"
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f1.1-order-wizard",
+      "activityId": "F1.1",
+      "activityName": "Order Creation Wizard",
+      "featureRef": "F1.1",
+      "status": "not_started",
+      "description": "Create new export order with customer, shipping, container, incoterms. Maps to SOP: CustomerEnquiry → SalesQuotation → OrderCapture.",
+      "sopEntityMapping": [
+        "Wizard Step 1 (Customer) → sop:CustomerEnquiry + sop:CustomerAccount",
+        "Wizard Step 2 (Shipping) → sop:SalesChannel + lsc:SupplyChain",
+        "Wizard Step 3 (Products) → sop:QuotationLine + org-ctx:Product",
+        "Wizard Submit → sop:OrderCapture"
+      ],
+      "stories": [
+        {"storyId": "US-1.1.1", "name": "Create new export order with customer/shipping", "status": "not_started", "testContract": {"type": "integration", "validates": "Order created with customer + shipping fields; persisted to JSON/DB", "sopEntity": "sop:OrderCapture"}},
+        {"storyId": "US-1.1.2", "name": "Search and select from existing customers", "status": "not_started", "testContract": {"type": "unit", "validates": "Customer search returns matches; selection populates order", "sopEntity": "sop:CustomerAccount"}},
+        {"storyId": "US-1.1.3", "name": "Specify container type, incoterms, shipping dates", "status": "not_started", "testContract": {"type": "unit", "validates": "Container/incoterms/dates stored on order; validated", "sopEntity": "sop:SalesChannel"}},
+        {"storyId": "US-1.1.4", "name": "Save order as draft to complete later", "status": "not_started", "testContract": {"type": "integration", "validates": "Draft order persists; reloadable; editable", "sopEntity": "sop:OrderCapture[status=draft]"}},
+        {"storyId": "US-1.1.5", "name": "Select supplier and establishment number", "status": "not_started", "testContract": {"type": "unit", "validates": "Supplier selection from catalogue; establishment number validated"}}
+      ],
+      "acceptanceCriteria": "Trader can create order with customer, shipping, products; save as draft; resume later"
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f1.2-line-items",
+      "activityId": "F1.2",
+      "activityName": "Order Line Items",
+      "featureRef": "F1.2",
+      "status": "not_started",
+      "description": "Add/edit/remove products on order with quantity and pricing. Maps to SOP: QuotationLine with product catalogue cross-ref.",
+      "sopEntityMapping": [
+        "Line item add → sop:QuotationLine (quantity, unitPrice, currency)",
+        "Product search → org-ctx:Product (code, description, brand)",
+        "Market eligibility → org-ctx:MarketSegment cross-ref",
+        "Line total → sop:QuotationLine.lineValue"
+      ],
+      "stories": [
+        {"storyId": "US-1.2.1", "name": "Add products with quantity and pricing", "status": "not_started", "testContract": {"type": "unit", "validates": "Product added to order; quantity × unitPrice = lineValue", "sopEntity": "sop:QuotationLine"}},
+        {"storyId": "US-1.2.2", "name": "Search 7,816+ products by code/description/brand", "status": "not_started", "testContract": {"type": "integration", "validates": "Search returns matches < 200ms; 7,816 products indexed", "sopEntity": "org-ctx:Product"}},
+        {"storyId": "US-1.2.3", "name": "See market eligibility for selected products", "status": "not_started", "testContract": {"type": "unit", "validates": "Eligibility flags shown per destination country", "sopEntity": "org-ctx:MarketSegment"}},
+        {"storyId": "US-1.2.4", "name": "Edit or remove line items before completing", "status": "not_started", "testContract": {"type": "unit", "validates": "Line edit updates totals; line remove recalculates order value"}}
+      ],
+      "acceptanceCriteria": "Products searchable; line items CRUD works; totals recalculate; market eligibility visible"
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f1.3-lifecycle",
+      "activityId": "F1.3",
+      "activityName": "Order Lifecycle",
+      "featureRef": "F1.3",
+      "status": "not_started",
+      "description": "Order state transitions: Draft → Complete → Exported. Maps to SOP: OrderValidation → CreditCheck → validatedOrderToFulfilment bridge.",
+      "sopEntityMapping": [
+        "Mark Complete → sop:OrderValidation (validates order completeness)",
+        "Credit check → sop:CreditCheck (automated or manual)",
+        "Order list → sop:SalesOrderProcess collection view",
+        "Validated → sop:validatedOrderToFulfilment → ofm:SalesOrder (future bridge)"
+      ],
+      "stories": [
+        {"storyId": "US-1.3.1", "name": "Mark order as complete", "status": "not_started", "testContract": {"type": "integration", "validates": "Order transitions Draft→Complete; validation rules fire", "sopEntity": "sop:OrderValidation"}},
+        {"storyId": "US-1.3.2", "name": "View list of all orders with status filtering", "status": "not_started", "testContract": {"type": "integration", "validates": "Order list loads; filter by status works; pagination works"}},
+        {"storyId": "US-1.3.3", "name": "View full details and history of any order", "status": "not_started", "testContract": {"type": "integration", "validates": "Order detail shows all fields, line items, audit trail"}},
+        {"storyId": "US-1.3.4", "name": "Edit a draft order", "status": "not_started", "testContract": {"type": "integration", "validates": "Draft order editable; Complete order not editable"}}
+      ],
+      "acceptanceCriteria": "Full order lifecycle: create → draft → edit → complete → view history"
+    },
+
+    {"_section": "=== PHASE 2: PRODUCT CATALOGUE (Epic 2) ==="},
+
+    {
+      "@type": "pe:ProcessPhase",
+      "@id": "pe:eoms-phase-2-products",
+      "phaseId": "EOMS-PH-2",
+      "phaseName": "Product Catalogue",
+      "epicRef": "Epic 2",
+      "phaseOrder": 3,
+      "status": "not_started",
+      "startDate": null,
+      "endDate": null,
+      "description": "Product search, filtering, and display. Maps to ORG-CONTEXT-ONT Product and ProductPortfolio entities.",
+      "deliverables": ["Product search < 200ms", "Market eligibility filters", "Brand/feed/state filters", "Product detail view"],
+      "pbsRefs": ["PBS-4.0"]
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f2.1-product-search",
+      "activityId": "F2.1",
+      "activityName": "Product Search",
+      "featureRef": "F2.1",
+      "status": "not_started",
+      "sopEntityMapping": ["Search → org-ctx:Product (code, description)", "Filter by market → org-ctx:MarketSegment", "Filter by brand → org-ctx:ProductPortfolio"],
+      "stories": [
+        {"storyId": "US-2.1.1", "name": "Search products < 200ms response time", "status": "not_started", "testContract": {"type": "performance", "validates": "p95 search latency < 200ms over 7,816 products"}},
+        {"storyId": "US-2.1.2", "name": "Filter products by market eligibility", "status": "not_started", "testContract": {"type": "unit", "validates": "Market filter reduces result set correctly"}},
+        {"storyId": "US-2.1.3", "name": "Filter by brand, feed type, product state", "status": "not_started", "testContract": {"type": "unit", "validates": "Multi-facet filter intersects correctly"}},
+        {"storyId": "US-2.1.4", "name": "See recently used products for quick access", "status": "not_started", "testContract": {"type": "integration", "validates": "Recent products persisted per user; ordered by recency"}}
+      ],
+      "acceptanceCriteria": "Product search fast, filterable by market/brand/state, recent products accessible"
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f2.2-product-display",
+      "activityId": "F2.2",
+      "activityName": "Product Data Display",
+      "featureRef": "F2.2",
+      "status": "not_started",
+      "stories": [
+        {"storyId": "US-2.2.1", "name": "View full product details with eligibility flags", "status": "not_started", "testContract": {"type": "unit", "validates": "Product detail renders all fields; eligibility icons shown"}},
+        {"storyId": "US-2.2.2", "name": "Product codes in monospace font", "status": "not_started", "testContract": {"type": "unit", "validates": "Product code element uses ds:fontFamily.mono token"}}
+      ],
+      "acceptanceCriteria": "Product details render correctly with eligibility and correct typography"
+    },
+
+    {"_section": "=== PHASE 3: ORDER EXPORT (Epic 3-Export) ==="},
+
+    {
+      "@type": "pe:ProcessPhase",
+      "@id": "pe:eoms-phase-3-export",
+      "phaseId": "EOMS-PH-3",
+      "phaseName": "Order Export to Finance",
+      "epicRef": "Epic 3 (Export)",
+      "phaseOrder": 4,
+      "status": "not_started",
+      "description": "Export completed orders for finance system import. The output side of the SOP→OFM bridge — validated orders become exportable.",
+      "deliverables": ["Single order export", "Batch export", "Export tracking", "CSV/JSON format options"],
+      "pbsRefs": ["PBS-5.0"]
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f3.1-order-export",
+      "activityId": "F3.1",
+      "activityName": "Order Export",
+      "featureRef": "F3.1",
+      "status": "not_started",
+      "sopEntityMapping": [
+        "Export trigger → sop:OrderValidation[status=passed] → generates export",
+        "Export record → sop:validatedOrderToFulfilment bridge (conceptual)",
+        "Export tracking → order.exportedAt timestamp"
+      ],
+      "stories": [
+        {"storyId": "US-3.1.1", "name": "Export completed order in clean format", "status": "not_started", "testContract": {"type": "integration", "validates": "Export file generated; contains all order + line data"}},
+        {"storyId": "US-3.1.2", "name": "Export multiple orders in batch", "status": "not_started", "testContract": {"type": "integration", "validates": "Batch export produces single file with N orders"}},
+        {"storyId": "US-3.1.3", "name": "See which orders have been exported", "status": "not_started", "testContract": {"type": "unit", "validates": "Exported badge shown on order list; filter by exported status"}}
+      ],
+      "acceptanceCriteria": "Orders exportable individually and in batch; export status tracked"
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f3.2-export-format",
+      "activityId": "F3.2",
+      "activityName": "Export Format",
+      "featureRef": "F3.2",
+      "status": "not_started",
+      "stories": [
+        {"storyId": "US-3.2.1", "name": "Export contains all order/line item/customer data", "status": "not_started", "testContract": {"type": "integration", "validates": "Export schema matches finance import requirements"}},
+        {"storyId": "US-3.2.2", "name": "Format compatible with finance system import", "status": "not_started", "testContract": {"type": "integration", "validates": "Finance system accepts exported file without error"}},
+        {"storyId": "US-3.2.3", "name": "Choose between CSV and JSON formats", "status": "not_started", "testContract": {"type": "unit", "validates": "Both CSV and JSON options available; both valid"}}
+      ],
+      "acceptanceCriteria": "Export format matches finance requirements; CSV and JSON both valid"
+    },
+
+    {"_section": "=== GATE G2: CORE FEATURE COMPLETE ==="},
+
+    {
+      "@type": "pe:ProcessGate",
+      "@id": "pe:eoms-gate-g2",
+      "gateId": "EOMS-G2",
+      "gateName": "G2: Core Feature Complete",
+      "gateType": "completeness",
+      "phaseRef": "pe:eoms-phase-3-export",
+      "criteria": "Order wizard functional; product search works; order export generates valid files; all Must stories in Epic 1–3 pass",
+      "threshold": 90,
+      "automated": false,
+      "blockingFactor": "blocking",
+      "result": null,
+      "score": null,
+      "reviewDate": null,
+      "approver": "CFO/COO",
+      "tddTestSuite": "All testContract entries for F1.x, F2.x, F3.x must PASS"
+    },
+
+    {"_section": "=== PHASE 8: APP FRAMEWORK & DS INTEGRATION (Epic 8) ==="},
+
+    {
+      "@type": "pe:ProcessPhase",
+      "@id": "pe:eoms-phase-8-framework",
+      "phaseId": "EOMS-PH-8",
+      "phaseName": "App Framework & DS Integration",
+      "epicRef": "Epic 8",
+      "phaseOrder": 0,
+      "status": "in_progress",
+      "startDate": "2026-02-23",
+      "endDate": null,
+      "description": "DS-ONT instance, application skeleton, token bridge, admin overlay. Cross-cutting — feeds UI for all other epics.",
+      "deliverables": ["DS-ONT instance (90+ tokens)", "App skeleton (8 zones, 6 nav, 10 actions)", "Token bridge (DS→shadcn CSS vars)", "Admin overlay", "Brand refinement workflow"],
+      "dsInstanceRef": "ds:eoms-endeavour-ds-instance-v1.0.0"
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f8.1-ds-instance",
+      "activityId": "F8.1",
+      "activityName": "DS-ONT Instance",
+      "featureRef": "F8.1",
+      "status": "completed",
+      "stories": [
+        {"storyId": "S8.1.1", "name": "Primitive tokens (colours, typography, spacing, radius)", "status": "done", "testContract": {"type": "unit", "validates": "90+ primitive tokens parse from JSONLD"}},
+        {"storyId": "S8.1.2", "name": "Semantic tokens (7 intent groups)", "status": "done", "testContract": {"type": "unit", "validates": "50+ semantic tokens resolve to primitives"}},
+        {"storyId": "S8.1.3", "name": "BrandVariant entity for Endeavour Meats", "status": "done", "testContract": {"type": "unit", "validates": "BrandVariant 'endeavour' loads with correct metadata"}},
+        {"storyId": "S8.1.4", "name": "ThemeMode entity (light default)", "status": "done", "testContract": {"type": "unit", "validates": "ThemeMode 'light' is default; resolves all semantic tokens"}},
+        {"storyId": "S8.1.5", "name": "Validate against DS-ONT v3.0.0 schema", "status": "done", "testContract": {"type": "unit", "validates": "JSONLD validates against DS-ONT schema; no missing required fields"}}
+      ],
+      "acceptanceCriteria": "DS-ONT instance valid, 90+ tokens, 7 semantic groups, Endeavour brand"
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f8.2-skeleton",
+      "activityId": "F8.2",
+      "activityName": "App Skeleton",
+      "featureRef": "F8.2",
+      "status": "completed",
+      "stories": [
+        {"storyId": "S8.2.1", "name": "Define 8 EOMS zones", "status": "done", "testContract": {"type": "unit", "validates": "8 zones defined with correct types and positions"}},
+        {"storyId": "S8.2.2", "name": "L4-EOMS nav layer (6 items)", "status": "done", "testContract": {"type": "unit", "validates": "6 nav items render; routes correct"}},
+        {"storyId": "S8.2.3", "name": "10 action entities with guards", "status": "done", "testContract": {"type": "unit", "validates": "10 actions defined; RBAC guards enforce role constraints"}},
+        {"storyId": "S8.2.4", "name": "ZoneComponent with Endeavour brand overrides", "status": "done", "testContract": {"type": "unit", "validates": "Zone components render with DS-ONT token overrides"}},
+        {"storyId": "S8.2.5", "name": "Validate cascade: PFC → PFI-EOMS", "status": "done", "testContract": {"type": "integration", "validates": "Skeleton cascade resolves: PFC base → PFI-EOMS override"}}
+      ],
+      "acceptanceCriteria": "Skeleton valid, 8 zones render, nav works, cascade resolves"
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f8.3-token-bridge",
+      "activityId": "F8.3",
+      "activityName": "Token Bridge",
+      "featureRef": "F8.3",
+      "status": "not_started",
+      "stories": [
+        {"storyId": "S8.3.1", "name": "Create lib/ds-css-bridge.ts", "status": "not_started", "testContract": {"type": "unit", "validates": "ds-css-bridge.ts compiles; exports bridge function"}},
+        {"storyId": "S8.3.2", "name": "DS-ONT → shadcn CSS var mapping", "status": "not_started", "testContract": {"type": "unit", "validates": "All DS-ONT semantic tokens map to --ds-* CSS vars"}},
+        {"storyId": "S8.3.3", "name": "Tailwind theme.extend via CSS vars", "status": "not_started", "testContract": {"type": "unit", "validates": "Tailwind config extends theme with CSS var references"}},
+        {"storyId": "S8.3.4", "name": "Skeleton token override merge", "status": "not_started", "testContract": {"type": "unit", "validates": "Zone-level token overrides merge correctly with base"}},
+        {"storyId": "S8.3.5", "name": "WCAG AA contrast check", "status": "not_started", "testContract": {"type": "unit", "validates": "All text/bg pairs meet WCAG AA 4.5:1 ratio"}}
+      ],
+      "acceptanceCriteria": "DS tokens flow through to CSS vars; Tailwind uses them; WCAG AA passes"
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f8.4-admin-overlay",
+      "activityId": "F8.4",
+      "activityName": "Admin Overlay",
+      "featureRef": "F8.4",
+      "status": "not_started",
+      "stories": [
+        {"storyId": "S8.4.1", "name": "CSS Live tab — all --ds-* vars with source badges", "status": "not_started", "testContract": {"type": "unit", "validates": "All active CSS vars listed with provenance badge"}},
+        {"storyId": "S8.4.2", "name": "DS-ONT Source tab — divergence flags", "status": "not_started", "testContract": {"type": "unit", "validates": "Divergence flags highlight overridden tokens"}},
+        {"storyId": "S8.4.3", "name": "Zone Inspector tab", "status": "not_started", "testContract": {"type": "unit", "validates": "Zone inspector shows zone tree with component details"}},
+        {"storyId": "S8.4.4", "name": "Token edit sandbox (non-persistent)", "status": "not_started", "testContract": {"type": "unit", "validates": "Token edit applies live; reverts on close"}},
+        {"storyId": "S8.4.5", "name": "Export current state as JSONLD patch", "status": "not_started", "testContract": {"type": "integration", "validates": "Exported JSONLD patch applies cleanly to DS-ONT instance"}}
+      ],
+      "acceptanceCriteria": "Admin overlay shows tokens, zones, divergence; sandbox edit works"
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f8.5-brand-refinement",
+      "activityId": "F8.5",
+      "activityName": "Brand Refinement Workflow",
+      "featureRef": "F8.5",
+      "status": "not_started",
+      "stories": [
+        {"storyId": "S8.5.1", "name": "Document brand refinement loop", "status": "not_started", "testContract": {"type": "documentation", "validates": "Brand refinement process documented with decision gates"}},
+        {"storyId": "S8.5.2", "name": "Figma ↔ DS-ONT token mapping table", "status": "not_started", "testContract": {"type": "documentation", "validates": "Mapping table covers all Figma variables"}},
+        {"storyId": "S8.5.3", "name": "WCAG verification matrix", "status": "not_started", "testContract": {"type": "unit", "validates": "Matrix covers all colour pairs; all pass AA"}},
+        {"storyId": "S8.5.4", "name": "Integration test: skeleton → tokens → render", "status": "not_started", "testContract": {"type": "integration", "validates": "Full pipeline: skeleton loads → tokens bridge → components render with brand"}}
+      ],
+      "acceptanceCriteria": "Brand refinement documented; WCAG verified; integration test passes"
+    },
+
+    {"_section": "=== PHASE 6: TESTING & UAT (Epic 6) ==="},
+
+    {
+      "@type": "pe:ProcessPhase",
+      "@id": "pe:eoms-phase-6-uat",
+      "phaseId": "EOMS-PH-6",
+      "phaseName": "Testing & UAT",
+      "epicRef": "Epic 6",
+      "phaseOrder": 5,
+      "status": "not_started",
+      "description": "Functional testing, user acceptance testing, bug resolution, PMF validation.",
+      "deliverables": ["Unit test coverage", "E2E integration tests", "Trader UAT sign-off", "PMF feedback > 80%"],
+      "pbsRefs": ["PBS-8.0"],
+      "tddNote": "This phase validates ALL testContract entries from prior phases. The PE process instance IS the test plan."
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f6.1-functional-testing",
+      "activityId": "F6.1",
+      "activityName": "Functional Testing",
+      "featureRef": "F6.1",
+      "status": "not_started",
+      "stories": [
+        {"storyId": "US-6.1.1", "name": "Unit tests cover critical business logic", "status": "not_started", "testContract": {"type": "coverage", "validates": "≥80% coverage on order creation, line item, validation logic"}},
+        {"storyId": "US-6.1.2", "name": "Integration tests verify e2e order flow", "status": "not_started", "testContract": {"type": "integration", "validates": "Full flow: create order → add lines → complete → export passes"}}
+      ],
+      "acceptanceCriteria": "Unit coverage ≥80% on core logic; e2e integration test passes"
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f6.2-uat",
+      "activityId": "F6.2",
+      "activityName": "User Acceptance Testing",
+      "featureRef": "F6.2",
+      "status": "not_started",
+      "stories": [
+        {"storyId": "US-6.2.1", "name": "Traders complete order creation test scenarios", "status": "not_started", "testContract": {"type": "uat", "validates": "> 90% task success rate across 3 trader testers"}}
+      ],
+      "acceptanceCriteria": "Traders achieve > 90% task success on order creation scenarios"
+    },
+
+    {
+      "@type": "pe:Activity",
+      "@id": "pe:eoms-f6.4-pmf",
+      "activityId": "F6.4",
+      "activityName": "PMF Validation",
+      "featureRef": "F6.4",
+      "status": "not_started",
+      "stories": [
+        {"storyId": "US-6.4.1", "name": "Structured feedback sessions with each user group", "status": "not_started", "testContract": {"type": "uat", "validates": "Feedback collected from all user groups"}},
+        {"storyId": "US-6.4.2", "name": "> 80% would choose EOMS over Excel", "status": "not_started", "testContract": {"type": "uat", "validates": "PMF survey: ≥80% preference for EOMS"}}
+      ],
+      "acceptanceCriteria": "≥80% of users prefer EOMS over Excel in structured feedback"
+    },
+
+    {"_section": "=== GATES G3/G4: UAT & PMF ==="},
+
+    {
+      "@type": "pe:ProcessGate",
+      "@id": "pe:eoms-gate-g3",
+      "gateId": "EOMS-G3",
+      "gateName": "G3: UAT Complete",
+      "gateType": "quality",
+      "phaseRef": "pe:eoms-phase-6-uat",
+      "criteria": "> 90% task success; trader sign-off; all P1 defects resolved",
+      "threshold": 90,
+      "automated": false,
+      "blockingFactor": "blocking",
+      "result": null,
+      "approver": "CFO/COO"
+    },
+
+    {
+      "@type": "pe:ProcessGate",
+      "@id": "pe:eoms-gate-g4",
+      "gateId": "EOMS-G4",
+      "gateName": "G4: PMF Feedback",
+      "gateType": "approval",
+      "phaseRef": "pe:eoms-phase-6-uat",
+      "criteria": "Feedback collected; priority fixes done; ≥80% prefer EOMS",
+      "threshold": 80,
+      "automated": false,
+      "blockingFactor": "blocking",
+      "result": null,
+      "approver": "COO"
+    },
+
+    {"_section": "=== PHASE 7: DEPLOYMENT & HANDOVER (Epic 7) ==="},
+
+    {
+      "@type": "pe:ProcessPhase",
+      "@id": "pe:eoms-phase-7-deploy",
+      "phaseId": "EOMS-PH-7",
+      "phaseName": "Deployment & Handover",
+      "epicRef": "Epic 7",
+      "phaseOrder": 6,
+      "status": "not_started",
+      "description": "Production deployment, user provisioning, documentation, knowledge transfer.",
+      "deliverables": ["Vercel production deploy (Sydney)", "Production Supabase with backups", "User accounts", "Documentation", "Handover to client"],
+      "pbsRefs": ["PBS-1.1", "PBS-7.0"]
+    },
+
+    {"_section": "=== GATE G5: GO-LIVE ==="},
+
+    {
+      "@type": "pe:ProcessGate",
+      "@id": "pe:eoms-gate-g5",
+      "gateId": "EOMS-G5",
+      "gateName": "G5: Go-Live",
+      "gateType": "approval",
+      "phaseRef": "pe:eoms-phase-7-deploy",
+      "criteria": "Production deployed; team trained; documentation complete; monitoring active",
+      "threshold": 95,
+      "automated": false,
+      "blockingFactor": "blocking",
+      "result": null,
+      "approver": "CEO",
+      "targetDate": "2026-04-18"
+    }
+  ],
+
+  "relationships": [
+    {"@type": "pe:hasPhase", "from": "pe:eoms-process-root", "to": "pe:eoms-phase-8-framework"},
+    {"@type": "pe:hasPhase", "from": "pe:eoms-process-root", "to": "pe:eoms-phase-0-foundation"},
+    {"@type": "pe:hasPhase", "from": "pe:eoms-process-root", "to": "pe:eoms-phase-1-order-mgmt"},
+    {"@type": "pe:hasPhase", "from": "pe:eoms-process-root", "to": "pe:eoms-phase-2-products"},
+    {"@type": "pe:hasPhase", "from": "pe:eoms-process-root", "to": "pe:eoms-phase-3-export"},
+    {"@type": "pe:hasPhase", "from": "pe:eoms-process-root", "to": "pe:eoms-phase-6-uat"},
+    {"@type": "pe:hasPhase", "from": "pe:eoms-process-root", "to": "pe:eoms-phase-7-deploy"},
+
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-0-foundation", "to": "pe:eoms-f0.1-env-setup"},
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-0-foundation", "to": "pe:eoms-f0.2-db-schema"},
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-0-foundation", "to": "pe:eoms-f0.3-auth"},
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-0-foundation", "to": "pe:eoms-f0.4-design-system"},
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-0-foundation", "to": "pe:eoms-f0.5-data-import"},
+
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-1-order-mgmt", "to": "pe:eoms-f1.1-order-wizard"},
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-1-order-mgmt", "to": "pe:eoms-f1.2-line-items"},
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-1-order-mgmt", "to": "pe:eoms-f1.3-lifecycle"},
+
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-2-products", "to": "pe:eoms-f2.1-product-search"},
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-2-products", "to": "pe:eoms-f2.2-product-display"},
+
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-3-export", "to": "pe:eoms-f3.1-order-export"},
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-3-export", "to": "pe:eoms-f3.2-export-format"},
+
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-8-framework", "to": "pe:eoms-f8.1-ds-instance"},
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-8-framework", "to": "pe:eoms-f8.2-skeleton"},
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-8-framework", "to": "pe:eoms-f8.3-token-bridge"},
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-8-framework", "to": "pe:eoms-f8.4-admin-overlay"},
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-8-framework", "to": "pe:eoms-f8.5-brand-refinement"},
+
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-6-uat", "to": "pe:eoms-f6.1-functional-testing"},
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-6-uat", "to": "pe:eoms-f6.2-uat"},
+    {"@type": "pe:hasActivity", "from": "pe:eoms-phase-6-uat", "to": "pe:eoms-f6.4-pmf"},
+
+    {"@type": "pe:gateResult", "from": "pe:eoms-phase-0-foundation", "to": "pe:eoms-gate-g1"},
+    {"@type": "pe:gateResult", "from": "pe:eoms-phase-3-export", "to": "pe:eoms-gate-g2"},
+    {"@type": "pe:gateResult", "from": "pe:eoms-phase-6-uat", "to": "pe:eoms-gate-g3"},
+    {"@type": "pe:gateResult", "from": "pe:eoms-phase-6-uat", "to": "pe:eoms-gate-g4"},
+    {"@type": "pe:gateResult", "from": "pe:eoms-phase-7-deploy", "to": "pe:eoms-gate-g5"},
+
+    {"@type": "pe:dependsOn", "from": "pe:eoms-phase-1-order-mgmt", "to": "pe:eoms-phase-0-foundation"},
+    {"@type": "pe:dependsOn", "from": "pe:eoms-phase-2-products", "to": "pe:eoms-phase-0-foundation"},
+    {"@type": "pe:dependsOn", "from": "pe:eoms-phase-3-export", "to": "pe:eoms-phase-1-order-mgmt"},
+    {"@type": "pe:dependsOn", "from": "pe:eoms-phase-6-uat", "to": "pe:eoms-phase-3-export"},
+    {"@type": "pe:dependsOn", "from": "pe:eoms-phase-7-deploy", "to": "pe:eoms-phase-6-uat"},
+    {"@type": "pe:feedsUI", "from": "pe:eoms-phase-8-framework", "to": "pe:eoms-phase-1-order-mgmt"},
+    {"@type": "pe:feedsUI", "from": "pe:eoms-phase-8-framework", "to": "pe:eoms-phase-2-products"},
+
+    {"@type": "pe:mapsToSOP", "from": "pe:eoms-process-root", "to": "sop:SalesOrderProcess", "oaa:crossOntologyRef": "SOP-ONT"},
+    {"@type": "pe:mapsToEMC", "from": "pe:eoms-process-root", "to": "emc:InstanceConfiguration-W4M-EOMS", "oaa:crossOntologyRef": "EMC-ONT"}
+  ],
+
+  "tddSpecification": {
+    "description": "Test-Driven Design specification derived from this PE process instance. Every story's testContract defines the test type and validation criteria. The builder generates test stubs from these contracts before implementation begins.",
+    "testLevels": [
+      {"level": "unit", "source": "story.testContract[type=unit]", "count": 25, "description": "Individual component/function tests per story"},
+      {"level": "integration", "source": "story.testContract[type=integration]", "count": 18, "description": "Cross-component flow tests per feature"},
+      {"level": "performance", "source": "story.testContract[type=performance]", "count": 1, "description": "Latency/throughput tests"},
+      {"level": "uat", "source": "story.testContract[type=uat]", "count": 3, "description": "User acceptance test scenarios"},
+      {"level": "coverage", "source": "story.testContract[type=coverage]", "count": 1, "description": "Code coverage threshold tests"},
+      {"level": "gate", "source": "ProcessGate entities", "count": 5, "description": "Phase progression quality gates (G1–G5)"}
+    ],
+    "tddWorkflow": [
+      "1. Builder reads PE process instance",
+      "2. For each Activity (feature), extract story testContracts",
+      "3. Generate test stubs (failing) from testContract.validates",
+      "4. Implement feature code to make tests pass",
+      "5. Run gate tests before phase progression",
+      "6. Mark Activity and Phase status as completed"
+    ],
+    "sopDomainMapping": "testContracts reference SOP-ONT entities via sopEntity field — ensures tests validate domain model compliance, not just UI behaviour"
+  }
+}
