@@ -20,10 +20,10 @@
 | **Epics Complete** | 1 (Epic 0 — G1 passed) |
 | **Features In Scope** | 18 |
 | **Features Complete** | 5 / 18 (F0.1–F0.5) |
-| **Stories Complete** | 13 / 57 |
+| **Stories Complete** | 14 / 58 |
 | **Next Gate** | G2 — Core Feature Complete |
 | **Blockers** | Client Supabase setup — needs shared Gmail (discuss with FB) |
-| **Key Decisions This Week** | Epic 8 added. Test data CSV imported. File-based JSON before DB — early client visualisation. Client Supabase ownership flagged P1. EOMS custom graph + EMC instance created — available in Ontology Visualiser for review. PE-Process Definition in PE-ONT added to EOMS graph scope. |
+| **Key Decisions This Week** | Epic 8 added. Test data CSV imported. File-based JSON before DB — early client visualisation. Client Supabase ownership flagged P1. EOMS custom graph + EMC instance created — available in Ontology Visualiser for review. PE-Process Definition in PE-ONT added to EOMS graph scope. PFI Registration Protocol created (F40.29 #998) — registry fixed, DS-ONT deployed to ontology library. |
 
 ### Status History
 
@@ -31,7 +31,7 @@
 |------|------|-----|-------|
 | W1 | 24 Feb 2026 | GREEN | Epic 0 started. Env + DB setup. |
 | W2 | 3 Mar 2026 | GREEN | G1 passed. Auth, data import, design tokens. |
-| W3 | 10 Mar 2026 | AMBER | Epic 8 added. DS-ONT instance + skeleton created. Test data CSV imported. File-based JSON approach adopted. EOMS custom graph created (EMC instance + SOP instances) — Ontology Visualiser available for review and inspection. PE-Process Definition in PE-ONT added to EOMS graph. TDD & Process Definition feature (F0.6) tracked. Client Supabase setup — resolving in meeting with FB. |
+| W3 | 10 Mar 2026 | AMBER | Epic 8 added. DS-ONT instance + skeleton created. Test data CSV imported. File-based JSON approach adopted. EOMS custom graph created (EMC instance + SOP instances) — Ontology Visualiser available for review and inspection. PE-Process Definition in PE-ONT added to EOMS graph. TDD & Process Definition feature (F0.6) tracked. PFI Registration Protocol created (F40.29 #998) — EOMS registry fixed, now visible in visualiser. Client Supabase setup — resolving in meeting with FB. |
 
 ---
 
@@ -80,6 +80,7 @@
 | | US-0.6.2: EOMS Process Definition — order lifecycle, state transitions, business rules | Must | Not Started | Derived from PRD epics/stories |
 | | US-0.6.3: Map PRD user stories → TDD technical specifications | Must | Not Started | Traceability: PRD → TDD |
 | | US-0.6.4: Create PE-Process Definition in PE-ONT for EOMS graph instance | Must | **In Progress** | `pe-eoms-process-instance-v1.0.0.jsonld` — Endeavour order lifecycle process model for EMC graph |
+| | US-0.6.5: PFI Registration Protocol — registry entry validation + DS-ONT copy to ontology library | **P1** | **Done** | Registry fixed: brand, dsInstanceRef, orgContext, maturityLevel. [F40.29 #998](https://github.com/ajrmooreuk/Azlan-EA-AAA/issues/998) |
 
 ---
 
@@ -390,6 +391,7 @@ flowchart LR
 | 10 | App Framework & DS Brief | 1.0.0 | Draft | Epic 8 specification | [Link](PFI-EOMS-BRIEF-Application-Framework-Design-System-Integration-v1.0.0.md) |
 | 11 | CI/CD Programme Linkages | 1.0.0 | Candidate | Unified change control | [Link](BRIEFING-PBS-PFC-CICD-Programme-Roadmap-Linkages.md) |
 | 12 | Process Workflow & User Journeys | 1.0.0 | Draft | PE-ONT process, mermaid diagrams, TDD spec | [Link](PFI-EOMS-PROC-Order-Management-Process-Workflow-v1.0.0.md) |
+| 13 | PFI Registration Protocol | 1.0.0 | Active | Unified PFI instance onboarding — 5-phase protocol, `pfc-pfi-register` skill spec | [Azlan F40.29 #998](https://github.com/ajrmooreuk/Azlan-EA-AAA/issues/998) |
 
 ### Governance
 
