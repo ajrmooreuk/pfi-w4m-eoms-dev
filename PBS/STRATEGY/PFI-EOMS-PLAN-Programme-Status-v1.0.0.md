@@ -23,7 +23,7 @@
 | **Stories Complete** | 13 / 53 |
 | **Next Gate** | G2 — Core Feature Complete |
 | **Blockers** | None |
-| **Key Decisions This Week** | Epic 8 added — PFC App Framework & DS Integration |
+| **Key Decisions This Week** | Epic 8 added. Test data CSV imported. File-based JSON before DB — early client visualisation. |
 
 ### Status History
 
@@ -31,7 +31,7 @@
 |------|------|-----|-------|
 | W1 | 24 Feb 2026 | GREEN | Epic 0 started. Env + DB setup. |
 | W2 | 3 Mar 2026 | GREEN | G1 passed. Auth, data import, design tokens. |
-| W3 | 10 Mar 2026 | GREEN | Epic 8 added. DS-ONT instance + skeleton created. Epic 1+2 starting. |
+| W3 | 10 Mar 2026 | GREEN | Epic 8 added. DS-ONT instance + skeleton created. Test data CSV imported. File-based JSON approach adopted for early client visualisation. Epic 1+2 starting. |
 
 ---
 
@@ -73,6 +73,7 @@
 | | US-0.5.1: Import product catalogue (7,816 codes) | Must | Done | |
 | | US-0.5.2: Import sample customer data | Must | Done | |
 | | US-0.5.3: ~~Import sample FX contract data~~ | ~~Must~~ | Removed | Deferred: FX = Phase 3 |
+| | US-0.5.4: Import anonymised sale order test data (7,635 lines) | Must | Done | `PBS/Data-Test/` — CSV source for JSON conversion |
 
 ---
 
@@ -81,15 +82,17 @@
 | Phase 2 | Weeks 3–6 | Gate: G2 | PBS: 2.0, 3.0 | PRD: Epic 1 |
 |---------|-----------|----------|---------------|-------------|
 
+> **Approach:** File-based JSON data (converted from test CSV) before Supabase DB. Enables early client visualisation of look and feel using DS-ONT tokens + Application Skeleton zones. DB migration follows once UI is validated.
+
 | Feature | Story | Priority | Status | Notes |
 |---------|-------|:--------:|:------:|-------|
-| **F1.1: Order Creation Wizard** | | | **Not Started** | |
+| **F1.1: Order Creation Wizard** | | | **Not Started** | File-based JSON for early UI demo |
 | | US-1.1.1: Create new export order with customer/shipping | Must | Not Started | |
 | | US-1.1.2: Search and select from existing customers | Must | Not Started | |
 | | US-1.1.3: Specify container type, incoterms, shipping dates | Must | Not Started | |
 | | US-1.1.4: Save order as draft to complete later | Should | Not Started | |
 | | US-1.1.5: Select supplier and establishment number | Must | Not Started | |
-| **F1.2: Order Line Items** | | | **Not Started** | |
+| **F1.2: Order Line Items** | | | **Not Started** | JSON data from test CSV (7,635 lines) |
 | | US-1.2.1: Add products with quantity and pricing | Must | Not Started | |
 | | US-1.2.2: Search 7,816+ products by code/description/brand | Must | Not Started | |
 | | US-1.2.3: See market eligibility for selected products | Must | Not Started | |
@@ -107,9 +110,11 @@
 | Phase 2 | Weeks 3–5 | Gate: G2 | PBS: 4.0 | PRD: Epic 2 |
 |---------|-----------|----------|----------|-------------|
 
+> **Approach:** File-based JSON product data for early client visualisation. DS-ONT branded product catalogue rendered in Z-EOMS-004 zone. DB migration after UI sign-off.
+
 | Feature | Story | Priority | Status | Notes |
 |---------|-------|:--------:|:------:|-------|
-| **F2.1: Product Search** | | | **Not Started** | |
+| **F2.1: Product Search** | | | **Not Started** | File-based JSON for early UI demo |
 | | US-2.1.1: Search products with < 200ms response time | Must | Not Started | |
 | | US-2.1.2: Filter products by market eligibility | Must | Not Started | |
 | | US-2.1.3: Filter by brand, feed type, product state | Should | Not Started | |
@@ -393,6 +398,7 @@ flowchart LR
 | PFI Config | - | [Link](../../instance-data/config/pfi-config.json) |
 | DS-ONT Instance | 1.0.0 | [Link](../../instance-data/tokens/EOMS-DESIGN-SYSTEM-ONT/eoms-endeavour-ds-instance-v1.0.0.jsonld) |
 | App Skeleton | 1.0.0 | [Link](../../instance-data/skeleton/eoms-app-skeleton-v1.0.0.jsonld) |
+| Test Data CSV (Sale Orders) | - | [Link](../../PBS/Data-Test/EOMS%20%20ANON2%20Ord-Anon%20%20Sale%20Order%20Item%20Report_220120261650(Sale%20Order%20Item%20Report)%20-%20EOMS%20Test%20Data%20Anonymised.csv) |
 
 ### PFC Pattern References
 
