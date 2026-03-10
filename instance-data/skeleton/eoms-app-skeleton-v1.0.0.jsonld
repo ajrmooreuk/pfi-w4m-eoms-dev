@@ -1,0 +1,362 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "ds": "https://platformcore.io/ontology/ds/",
+    "emc": "https://platformcore.io/ontology/emc/",
+    "eoms": "https://endeavourmeats.com/ontology/eoms/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@id": "ds:eoms-app-skeleton-v1.0.0",
+  "@type": "ds:AppSkeletonInstance",
+  "name": "EOMS PFI Application Skeleton Override",
+  "description": "PFI-tier skeleton override for Endeavour Meats Order Management System. Defines 8 EOMS-specific zones for order management, product catalogue, approvals, and FX. 6 L4 navigation items for export order workflow. Endeavour brand token overrides (deep navy + burnt sienna). Cascade: PFC -> PFI-EOMS.",
+  "version": "1.0.0",
+  "dateCreated": "2026-03-10",
+  "ds:targetOntology": "ds-v3.0.0-oaa-v6.json",
+  "ds:cascadeTier": "PFI",
+  "ds:extendsApp": { "@id": "ds:pfc-app-skeleton-v1.0.0" },
+  "ds:configuredByApp": { "@id": "emc:InstanceConfiguration-EOMS" },
+
+  "@graph": [
+
+    {
+      "_section": "=== L4-EOMS NAVIGATION ITEMS (6) ==="
+    },
+
+    {
+      "@id": "ds:nav-L4-eoms-dashboard",
+      "@type": "ds:NavItem",
+      "ds:itemId": "nav-eoms-dashboard",
+      "ds:label": "Dashboard",
+      "ds:itemType": "Button",
+      "ds:action": "showDashboard",
+      "ds:icon": "layout-dashboard",
+      "ds:shortcut": null,
+      "ds:visibilityCondition": "state.activeInstanceId === 'PFI-EOMS'",
+      "ds:renderOrder": 1,
+      "ds:cascadeTier": "PFI",
+      "ds:belongsToLayer": { "@id": "ds:navlayer-L4" },
+      "description": "EOMS order dashboard — KPI tiles, recent orders, pending approvals count, daily export value"
+    },
+    {
+      "@id": "ds:nav-L4-eoms-new-order",
+      "@type": "ds:NavItem",
+      "ds:itemId": "nav-eoms-new-order",
+      "ds:label": "New Order",
+      "ds:itemType": "Button",
+      "ds:action": "showOrderWizard",
+      "ds:icon": "plus-circle",
+      "ds:shortcut": null,
+      "ds:visibilityCondition": "state.activeInstanceId === 'PFI-EOMS'",
+      "ds:renderOrder": 2,
+      "ds:cascadeTier": "PFI",
+      "ds:belongsToLayer": { "@id": "ds:navlayer-L4" },
+      "description": "EOMS 4-step guided order creation wizard — customer, products, shipping, review"
+    },
+    {
+      "@id": "ds:nav-L4-eoms-products",
+      "@type": "ds:NavItem",
+      "ds:itemId": "nav-eoms-products",
+      "ds:label": "Products",
+      "ds:itemType": "Button",
+      "ds:action": "showProductCatalogue",
+      "ds:icon": "package",
+      "ds:shortcut": null,
+      "ds:visibilityCondition": "state.activeInstanceId === 'PFI-EOMS'",
+      "ds:renderOrder": 3,
+      "ds:cascadeTier": "PFI",
+      "ds:belongsToLayer": { "@id": "ds:navlayer-L4" },
+      "description": "EOMS product catalogue — 7,816+ product codes with market eligibility, cut specs, pack weights"
+    },
+    {
+      "@id": "ds:nav-L4-eoms-approvals",
+      "@type": "ds:NavItem",
+      "ds:itemId": "nav-eoms-approvals",
+      "ds:label": "Approvals",
+      "ds:itemType": "Button",
+      "ds:action": "showApprovalQueue",
+      "ds:icon": "check-square",
+      "ds:shortcut": null,
+      "ds:visibilityCondition": "state.activeInstanceId === 'PFI-EOMS' && state.userRole !== 'viewer'",
+      "ds:renderOrder": 4,
+      "ds:cascadeTier": "PFI",
+      "ds:belongsToLayer": { "@id": "ds:navlayer-L4" },
+      "description": "EOMS approval queue — pending orders awaiting manager sign-off, margin check, compliance review"
+    },
+    {
+      "@id": "ds:nav-L4-eoms-fx",
+      "@type": "ds:NavItem",
+      "ds:itemId": "nav-eoms-fx",
+      "ds:label": "FX Rates",
+      "ds:itemType": "Button",
+      "ds:action": "showFXManagement",
+      "ds:icon": "dollar-sign",
+      "ds:shortcut": null,
+      "ds:visibilityCondition": "state.activeInstanceId === 'PFI-EOMS'",
+      "ds:renderOrder": 5,
+      "ds:cascadeTier": "PFI",
+      "ds:belongsToLayer": { "@id": "ds:navlayer-L4" },
+      "description": "EOMS FX management — currency rates, margin calculator, multi-currency order support"
+    },
+    {
+      "@id": "ds:nav-L4-eoms-admin",
+      "@type": "ds:NavItem",
+      "ds:itemId": "nav-eoms-admin",
+      "ds:label": "Admin",
+      "ds:itemType": "Toggle",
+      "ds:action": "toggleAdminOverlay",
+      "ds:icon": "settings",
+      "ds:shortcut": null,
+      "ds:visibilityCondition": "state.activeInstanceId === 'PFI-EOMS' && state.userRole === 'admin'",
+      "ds:renderOrder": 6,
+      "ds:cascadeTier": "PFI",
+      "ds:belongsToLayer": { "@id": "ds:navlayer-L4" },
+      "description": "EOMS admin overlay — Design Director token inspector, zone browser, skeleton inspector"
+    },
+
+    {
+      "_section": "=== EOMS-SPECIFIC ZONES (8) ==="
+    },
+
+    {
+      "@id": "ds:zone-Z-EOMS-001",
+      "@type": "ds:AppZone",
+      "ds:zoneId": "Z-EOMS-001",
+      "ds:zoneName": "Dashboard",
+      "ds:zoneType": "Fixed",
+      "ds:position": "center",
+      "ds:defaultVisible": true,
+      "ds:cascadeTier": "PFI",
+      "ds:visibilityCondition": "state.activeInstanceId === 'PFI-EOMS'",
+      "description": "Order summary KPI tiles (total orders, pending approvals, daily export value, rejection rate), recent orders table, quick actions"
+    },
+    {
+      "@id": "ds:zone-Z-EOMS-002",
+      "@type": "ds:AppZone",
+      "ds:zoneId": "Z-EOMS-002",
+      "ds:zoneName": "Order Wizard",
+      "ds:zoneType": "Fixed",
+      "ds:position": "center",
+      "ds:defaultVisible": false,
+      "ds:cascadeTier": "PFI",
+      "ds:visibilityCondition": "state.activeInstanceId === 'PFI-EOMS'",
+      "description": "4-step guided order creation: Step 1 Customer/Consignee, Step 2 Product Selection, Step 3 Shipping/Logistics, Step 4 Review & Submit"
+    },
+    {
+      "@id": "ds:zone-Z-EOMS-003",
+      "@type": "ds:AppZone",
+      "ds:zoneId": "Z-EOMS-003",
+      "ds:zoneName": "Order Detail",
+      "ds:zoneType": "Sliding",
+      "ds:position": "right",
+      "ds:defaultVisible": false,
+      "ds:cascadeTier": "PFI",
+      "ds:visibilityCondition": "state.activeInstanceId === 'PFI-EOMS' && state.activeOrder",
+      "description": "Full order view with line items, pricing breakdown, audit trail, status history, export to finance action"
+    },
+    {
+      "@id": "ds:zone-Z-EOMS-004",
+      "@type": "ds:AppZone",
+      "ds:zoneId": "Z-EOMS-004",
+      "ds:zoneName": "Product Catalogue",
+      "ds:zoneType": "Sliding",
+      "ds:position": "right",
+      "ds:defaultVisible": false,
+      "ds:cascadeTier": "PFI",
+      "ds:visibilityCondition": "state.activeInstanceId === 'PFI-EOMS'",
+      "description": "7,816+ product search with market eligibility filter, cut specifications, pack weights, product code lookup"
+    },
+    {
+      "@id": "ds:zone-Z-EOMS-005",
+      "@type": "ds:AppZone",
+      "ds:zoneId": "Z-EOMS-005",
+      "ds:zoneName": "Approval Queue",
+      "ds:zoneType": "Sliding",
+      "ds:position": "left",
+      "ds:defaultVisible": false,
+      "ds:cascadeTier": "PFI",
+      "ds:visibilityCondition": "state.activeInstanceId === 'PFI-EOMS' && state.userRole !== 'viewer'",
+      "description": "Pending orders awaiting manager approval — margin check, compliance review, approve/reject with notes"
+    },
+    {
+      "@id": "ds:zone-Z-EOMS-006",
+      "@type": "ds:AppZone",
+      "ds:zoneId": "Z-EOMS-006",
+      "ds:zoneName": "FX Management",
+      "ds:zoneType": "Sliding",
+      "ds:position": "left",
+      "ds:defaultVisible": false,
+      "ds:cascadeTier": "PFI",
+      "ds:visibilityCondition": "state.activeInstanceId === 'PFI-EOMS'",
+      "description": "Currency rate management, margin calculator, multi-currency support for export pricing"
+    },
+    {
+      "@id": "ds:zone-Z-EOMS-007",
+      "@type": "ds:AppZone",
+      "ds:zoneId": "Z-EOMS-007",
+      "ds:zoneName": "Admin Overlay",
+      "ds:zoneType": "Floating",
+      "ds:position": "right",
+      "ds:defaultVisible": false,
+      "ds:zIndex": 900,
+      "ds:cascadeTier": "PFI",
+      "ds:visibilityCondition": "state.activeInstanceId === 'PFI-EOMS' && state.userRole === 'admin'",
+      "description": "Design Director overlay — CSS Live tab (all --ds-* vars with source badges), DS-ONT Source tab (token divergence flags), token edit sandbox"
+    },
+    {
+      "@id": "ds:zone-Z-EOMS-008",
+      "@type": "ds:AppZone",
+      "ds:zoneId": "Z-EOMS-008",
+      "ds:zoneName": "Skeleton Inspector",
+      "ds:zoneType": "Floating",
+      "ds:position": "right",
+      "ds:defaultVisible": false,
+      "ds:zIndex": 910,
+      "ds:cascadeTier": "PFI",
+      "ds:visibilityCondition": "state.activeInstanceId === 'PFI-EOMS' && state.userRole === 'admin'",
+      "description": "Skeleton & token inspector — zone browser, component placement view, token override count per zone, cascade tier badges"
+    },
+
+    {
+      "_section": "=== EOMS BRAND TOKEN OVERRIDES ==="
+    },
+
+    {
+      "@id": "ds:cmp-eoms-context-bar",
+      "@type": "ds:ZoneComponent",
+      "ds:placementId": "cmp-eoms-context-bar",
+      "ds:renderOrder": 1,
+      "ds:slotName": "context-bar-content",
+      "ds:tokenOverrides": {
+        "--ds-color-primary": "#19253B",
+        "--ds-color-secondary": "#BC4620",
+        "--ds-color-accent": "#6B9EFE",
+        "--ds-font-family-heading": "'Baskervville', Georgia, 'Times New Roman', serif",
+        "--ds-font-family-body": "'Lato', Helvetica, Arial, sans-serif",
+        "--ds-font-family-mono": "'JetBrains Mono', 'Fira Code', 'Consolas', monospace",
+        "--ds-color-primary-hover": "#4E74BA",
+        "--ds-color-primary-light": "#E8F4F8",
+        "--ds-surface-brand": "#19253B",
+        "--ds-text-on-brand": "#FFFFFF",
+        "--ds-surface-cta": "#BC4620",
+        "--ds-text-on-cta": "#FFFFFF"
+      },
+      "ds:visibilityCondition": "state.activeInstanceId === 'PFI-EOMS'",
+      "ds:cascadeTier": "PFI",
+      "ds:placedInZone": { "@id": "ds:zone-Z1" },
+      "ds:placesComponent": { "@id": "ds:dc-context-bar" },
+      "description": "EOMS Endeavour Meats branded context bar — deep navy #19253B, burnt sienna CTA #BC4620, Baskervville headings, Lato body"
+    },
+
+    {
+      "_section": "=== EOMS ACTION REGISTRY (10) ==="
+    },
+
+    {
+      "@id": "ds:action-eoms-showDashboard",
+      "@type": "ds:Action",
+      "ds:actionId": "showDashboard",
+      "ds:actionName": "Show Dashboard",
+      "ds:functionRef": "eomsShowDashboard",
+      "ds:cascadeTier": "PFI",
+      "description": "Return to EOMS dashboard (Z-EOMS-001)"
+    },
+    {
+      "@id": "ds:action-eoms-showOrderWizard",
+      "@type": "ds:Action",
+      "ds:actionId": "showOrderWizard",
+      "ds:actionName": "New Order",
+      "ds:functionRef": "eomsShowOrderWizard",
+      "ds:cascadeTier": "PFI",
+      "description": "Show 4-step order creation wizard (Z-EOMS-002)"
+    },
+    {
+      "@id": "ds:action-eoms-showOrderDetail",
+      "@type": "ds:Action",
+      "ds:actionId": "showOrderDetail",
+      "ds:actionName": "Order Detail",
+      "ds:functionRef": "eomsShowOrderDetail",
+      "ds:parameterType": "String",
+      "ds:cascadeTier": "PFI",
+      "description": "Show order detail panel for selected order (Z-EOMS-003)"
+    },
+    {
+      "@id": "ds:action-eoms-showProductCatalogue",
+      "@type": "ds:Action",
+      "ds:actionId": "showProductCatalogue",
+      "ds:actionName": "Product Catalogue",
+      "ds:functionRef": "eomsShowProductCatalogue",
+      "ds:cascadeTier": "PFI",
+      "description": "Show product catalogue browser (Z-EOMS-004)"
+    },
+    {
+      "@id": "ds:action-eoms-showApprovalQueue",
+      "@type": "ds:Action",
+      "ds:actionId": "showApprovalQueue",
+      "ds:actionName": "Approval Queue",
+      "ds:functionRef": "eomsShowApprovalQueue",
+      "ds:guardCondition": "state.userRole !== 'viewer'",
+      "ds:guardMessage": "Approval queue requires trader or manager role",
+      "ds:cascadeTier": "PFI",
+      "description": "Show pending approvals queue (Z-EOMS-005)"
+    },
+    {
+      "@id": "ds:action-eoms-showFXManagement",
+      "@type": "ds:Action",
+      "ds:actionId": "showFXManagement",
+      "ds:actionName": "FX Management",
+      "ds:functionRef": "eomsShowFXManagement",
+      "ds:cascadeTier": "PFI",
+      "description": "Show FX rate management panel (Z-EOMS-006)"
+    },
+    {
+      "@id": "ds:action-eoms-toggleAdminOverlay",
+      "@type": "ds:Action",
+      "ds:actionId": "toggleAdminOverlay",
+      "ds:actionName": "Toggle Admin",
+      "ds:functionRef": "eomsToggleAdminOverlay",
+      "ds:guardCondition": "state.userRole === 'admin'",
+      "ds:guardMessage": "Admin overlay requires admin role",
+      "ds:cascadeTier": "PFI",
+      "description": "Toggle admin overlay (Z-EOMS-007) — Design Director token inspector and zone browser"
+    },
+    {
+      "@id": "ds:action-eoms-approveOrder",
+      "@type": "ds:Action",
+      "ds:actionId": "approveOrder",
+      "ds:actionName": "Approve Order",
+      "ds:functionRef": "eomsApproveOrder",
+      "ds:parameterType": "String",
+      "ds:guardCondition": "state.userRole === 'manager' || state.userRole === 'admin'",
+      "ds:guardMessage": "Order approval requires manager or admin role",
+      "ds:triggersSyncAfter": true,
+      "ds:cascadeTier": "PFI",
+      "description": "Approve pending order — transitions status to approved, triggers sync"
+    },
+    {
+      "@id": "ds:action-eoms-rejectOrder",
+      "@type": "ds:Action",
+      "ds:actionId": "rejectOrder",
+      "ds:actionName": "Reject Order",
+      "ds:functionRef": "eomsRejectOrder",
+      "ds:parameterType": "String",
+      "ds:guardCondition": "state.userRole === 'manager' || state.userRole === 'admin'",
+      "ds:guardMessage": "Order rejection requires manager or admin role",
+      "ds:triggersSyncAfter": true,
+      "ds:cascadeTier": "PFI",
+      "description": "Reject pending order with notes — transitions status to rejected, triggers sync"
+    },
+    {
+      "@id": "ds:action-eoms-exportToFinance",
+      "@type": "ds:Action",
+      "ds:actionId": "exportToFinance",
+      "ds:actionName": "Export to Finance",
+      "ds:functionRef": "eomsExportToFinance",
+      "ds:parameterType": "String",
+      "ds:guardCondition": "state.activeOrder && state.activeOrder.status === 'approved'",
+      "ds:guardMessage": "Only approved orders can be exported to finance",
+      "ds:cascadeTier": "PFI",
+      "description": "Export approved order as CSV/JSON for downstream finance processing"
+    }
+  ]
+}

@@ -4,8 +4,8 @@
 
 ---
 
-**Last Updated:** 19 February 2026
-**Version:** 4.0
+**Last Updated:** 10 March 2026
+**Version:** 5.0
 **Status:** For Sign-Off
 
 ---
@@ -51,6 +51,16 @@ EOMS_VSOM_OKR_VP_ROADMAP.md         PLAN   - VSOM, OKRs, KPIs, VP, Epics, Gantt
 | [EOMS_HLD_v2.1.md](EOMS_HLD_v2.0.md) | 2.1 | For Implementation | Architecture — Next.js + Supabase |
 | [EOMS_IMPLEMENTATION_PLAN_v2.1.md](EOMS_IMPLEMENTATION_PLAN_v2.0.md) | 2.1 | For Implementation | WBS, milestones, critical path |
 | [EOMS_VSOM_OKR_VP_ROADMAP.md](EOMS_VSOM_OKR_VP_ROADMAP.md) | 1.0 | Draft | VSOM, OKRs, KPIs, Value Proposition, Epics roadmap, Gantt |
+
+---
+
+## Epic 8 — Application Framework & Design System Integration (NEW)
+
+| Document | Version | Status | Purpose |
+|----------|---------|--------|---------|
+| [PFI-EOMS-BRIEF-Application-Framework-DS-Integration](../STRATEGY/PFI-EOMS-BRIEF-Application-Framework-Design-System-Integration-v1.0.0.md) | 1.0.0 | Draft | Epic 8 strategy briefing — DS-ONT + skeleton + token bridge |
+| [eoms-endeavour-ds-instance-v1.0.0.jsonld](../../instance-data/tokens/EOMS-DESIGN-SYSTEM-ONT/eoms-endeavour-ds-instance-v1.0.0.jsonld) | 1.0.0 | Draft | DS-ONT instance — Endeavour Meats brand tokens (primitive + semantic) |
+| [eoms-app-skeleton-v1.0.0.jsonld](../../instance-data/skeleton/eoms-app-skeleton-v1.0.0.jsonld) | 1.0.0 | Draft | Application skeleton — 8 zones, 6 nav items, 10 actions |
 
 ---
 
@@ -177,6 +187,7 @@ EOMS_VSOM_OKR_VP_ROADMAP.md         PLAN   - VSOM, OKRs, KPIs, VP, Epics, Gantt
 | OKR-ONT v2.0.0 | Objectives & Key Results framework |
 | VP-ONT v1.2.3 | Value Proposition framework |
 | PPM-ONT v4.0.0 | Portfolio/Programme/Project management |
+| DS-ONT v3.0.0 | Design System Ontology — token cascade, zones, navigation, actions |
 | EFS-ONT v2.0.0 | Epics-Features-Stories agile framework |
 
 ---
