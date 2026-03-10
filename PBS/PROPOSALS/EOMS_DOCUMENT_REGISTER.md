@@ -64,13 +64,25 @@ EOMS_VSOM_OKR_VP_ROADMAP.md         PLAN   - VSOM, OKRs, KPIs, VP, Epics, Gantt
 
 ---
 
+## Programme Status & Graph Instances
+
+| Document | Version | Status | Purpose |
+|----------|---------|--------|---------|
+| [PFI-EOMS-PLAN-Programme-Status-v1.0.0.md](../STRATEGY/PFI-EOMS-PLAN-Programme-Status-v1.0.0.md) | 1.0.0 | Active | Master programme plan — 7 epics, 18 features, 57 stories, weekly status |
+| [eoms-emc-instance-v1.0.0.json](../PBS-ONT-PFI-EOMS/eoms-emc-instance-v1.0.0.json) | 1.0.0 | Done | EMC composed graph — 5 ontologies, 8 join points, 3 scope rules |
+| [eoms-sop-instances-v1.0.0.json](../PBS-ONT-PFI-EOMS/eoms-sop-instances-v1.0.0.json) | 1.0.0 | Done | SOP sales pipeline — 5 accounts, 6 enquiries, 4 quotations, 3 captures |
+| [pfi-w4m-eoms-graph-scope.json](../PBS-ONT-PFI-EOMS/pfi-w4m-eoms-graph-scope.json) | 1.0.0 | Done | Graph scope — 25 visible ontologies, PRODUCT scope |
+| [pe-eoms-process-instance-v1.0.0.jsonld](../../instance-data/ontologies/PE-ONT/pe-eoms-process-instance-v1.0.0.jsonld) | 1.0.0 | In Progress | PE-ONT process definition — Endeavour order lifecycle |
+
+---
+
 ## Governance Documents
 
 | Document | Version | Status | Purpose |
 |----------|---------|--------|---------|
 | [EOMS_CHANGE_CONTROL.md](EOMS_CHANGE_CONTROL.md) | 1.0 | Active | Change register (56 items, incl. re-scoping CC-049–CC-056) |
 | [EOMS_DOCUMENT_TRACEABILITY.md](EOMS_DOCUMENT_TRACEABILITY.md) | 2.0 | Active | Cross-document alignment |
-| EOMS_DOCUMENT_REGISTER.md | 4.0 | Active | This document |
+| EOMS_DOCUMENT_REGISTER.md | 5.0 | Active | This document |
 
 ---
 
