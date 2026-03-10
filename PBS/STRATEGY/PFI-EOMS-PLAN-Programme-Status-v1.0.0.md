@@ -15,15 +15,15 @@
 | Field | Current |
 |-------|---------|
 | **Reporting Week** | W3 — 10 Mar 2026 |
-| **Overall RAG** | GREEN |
+| **Overall RAG** | AMBER |
 | **Epics In Scope** | 5 (Epic 0, 1, 2, 3-Export, 8) |
 | **Epics Complete** | 1 (Epic 0 — G1 passed) |
 | **Features In Scope** | 17 |
 | **Features Complete** | 5 / 17 (F0.1–F0.5) |
 | **Stories Complete** | 13 / 53 |
 | **Next Gate** | G2 — Core Feature Complete |
-| **Blockers** | None |
-| **Key Decisions This Week** | Epic 8 added. Test data CSV imported. File-based JSON before DB — early client visualisation. |
+| **Blockers** | Client Supabase setup — needs shared Gmail (discuss with FB) |
+| **Key Decisions This Week** | Epic 8 added. Test data CSV imported. File-based JSON before DB — early client visualisation. Client Supabase ownership flagged P1. |
 
 ### Status History
 
@@ -31,7 +31,7 @@
 |------|------|-----|-------|
 | W1 | 24 Feb 2026 | GREEN | Epic 0 started. Env + DB setup. |
 | W2 | 3 Mar 2026 | GREEN | G1 passed. Auth, data import, design tokens. |
-| W3 | 10 Mar 2026 | GREEN | Epic 8 added. DS-ONT instance + skeleton created. Test data CSV imported. File-based JSON approach adopted for early client visualisation. Epic 1+2 starting. |
+| W3 | 10 Mar 2026 | AMBER | Epic 8 added. DS-ONT instance + skeleton created. Test data CSV imported. File-based JSON approach adopted. **P1 BLOCKER:** Client Supabase setup requires shared Gmail — discuss with FB. |
 
 ---
 
@@ -54,10 +54,11 @@
 
 | Feature | Story | Priority | Status | Notes |
 |---------|-------|:--------:|:------:|-------|
-| **F0.1: Environment Setup** | | | **DONE** | |
-| | US-0.1.1: Set up Supabase project (Sydney) | Must | Done | |
+| **F0.1: Environment Setup** | | | **IN PROGRESS** | Client Supabase blocker |
+| | US-0.1.1: Set up Supabase project (Sydney) | Must | Done | Dev instance |
 | | US-0.1.2: Set up Vercel deployment pipeline | Must | Done | |
 | | US-0.1.3: Configure dev/staging/prod environments | Must | Done | |
+| | US-0.1.4: Client Supabase project setup — shared Gmail required | P1 | **BLOCKED** | Discuss with FB — needs shared Gmail address for client-owned Supabase account |
 | **F0.2: Database Schema** | | | **DONE** | |
 | | US-0.2.1: Implement order/product/customer DB schemas | Must | Done | |
 | | US-0.2.2: Configure Row Level Security policies | Must | Done | |
@@ -362,6 +363,7 @@ flowchart LR
 | Scope creep | Medium | Medium | Fixed Phase 1 scope, strict CC | Monitoring |
 | Endeavour semantic colours fail WCAG | Medium | Medium | Contrast check at bridge init (S8.3.5) | Open |
 | Brand evolves significantly | High | Low | DS-ONT designed for this — update JSONLD | Accepted |
+| Client Supabase account setup | Low | Low | Needs shared Gmail — resolving in W3 meeting with FB | Open |
 
 ---
 
@@ -399,6 +401,23 @@ flowchart LR
 | DS-ONT Instance | 1.0.0 | [Link](../../instance-data/tokens/EOMS-DESIGN-SYSTEM-ONT/eoms-endeavour-ds-instance-v1.0.0.jsonld) |
 | App Skeleton | 1.0.0 | [Link](../../instance-data/skeleton/eoms-app-skeleton-v1.0.0.jsonld) |
 | Test Data CSV (Sale Orders) | - | [Link](../../PBS/Data-Test/EOMS%20%20ANON2%20Ord-Anon%20%20Sale%20Order%20Item%20Report_220120261650(Sale%20Order%20Item%20Report)%20-%20EOMS%20Test%20Data%20Anonymised.csv) |
+
+### W4M-EOMS Custom Graph Instance — Future Integration Potential
+
+EOMS has its own PFI graph instance (`pfi-w4m-eoms`) — distinct from other W4M products (WWG, RCS). This graph provides the foundation for Endeavour-specific systems integrations and PF Solutions as the platform matures.
+
+| Graph Instance | Ontology | Purpose | Status |
+|---|---|---|:---:|
+| `pfi-config.json` | — | PFI triad identity, repo config, ontology series | Done |
+| `eoms-endeavour-ds-instance-v1.0.0.jsonld` | DS-ONT v3.0.0 | Endeavour brand tokens (90+), semantic mapping | Done |
+| `eoms-app-skeleton-v1.0.0.jsonld` | DS-ONT v3.0.0 | 8 zones, 6 nav items, 10 actions, zone components | Done |
+| `pfi-w4m-eoms-graph-scope.json` | — | 25 visible ontologies, PRODUCT scope | Done |
+| `vp-eoms-instance-v1.0.0.jsonld` | VP-ONT | Endeavour value propositions, export buyer ICPs | Future |
+| `rrr-eoms-instance-v1.0.0.jsonld` | RRR-ONT | Endeavour roles, RACI for order management | Future |
+| `eoms-emc-instance-v1.0.0.jsonld` | EMC-ONT v5.0.0 | EOMS composed graph spec, join points, data slices | Future |
+| `eoms-lsc-instance-v1.0.0.jsonld` | LSC-ONT | Endeavour export supply corridors (AU → destinations) | Future |
+
+> **Why this matters:** Each graph instance is specific to Endeavour Meats (END) and their operations — not shared with WWG or other W4M products. As EOMS matures beyond Phase 1, these instances enable AI agents, supply chain intelligence, FX integration, and executive analytics to plug in via the EMC cascade without rework. The data model is deliberately designed for this progression.
 
 ### PFC Pattern References
 
