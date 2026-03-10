@@ -1,0 +1,376 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "emc": "https://platformcore.io/ontology/emc/",
+    "sop": "https://oaa-ontology.org/v6/sales-order-processing/",
+    "ofm": "https://oaa-ontology.org/v6/order-fulfilment/",
+    "lsc": "https://oaa-ontology.org/v6/logistics/",
+    "org": "https://platformcore.io/ontology/org/",
+    "org-ctx": "https://platformcore.io/ontology/org-context/",
+    "rrr": "https://platformcore.io/ontology/rrr/",
+    "crt": "https://platformcore.io/ontology/crt/",
+    "vp": "https://platformcore.io/ontology/vp/",
+    "kpi": "https://platformcore.io/ontology/kpi/",
+    "pe": "https://platformcore.io/ontology/pe/"
+  },
+  "@type": "InstanceDataSet",
+  "@id": "emc:eoms-emc-instance-v1.0.0",
+  "metadata": {
+    "title": "W4M-EOMS EMC InstanceConfiguration — Sales Order Processing Graph",
+    "version": "1.0.0",
+    "created": "2026-03-10",
+    "author": "PF-Core Platform Team",
+    "owningInstance": "PFI-W4M-EOMS",
+    "sourceOntology": "EMC-ONT v5.2.0",
+    "oaaVersion": "7.0.0",
+    "description": "EMC InstanceConfiguration for W4M EOMS — the Enterprise Order Management System PFI instance. Models the complete sales-to-fulfilment lifecycle: SOP (enquiry → quotation → capture → validation → credit check) → OFM (fulfilment → dispatch → SLA) → LSC (logistics corridors). Foundation bridges for customer organisation, market segmentation, and competitive landscape. Entirely separate from W4M-WWG (which is the food import business using EOMS as its platform).",
+    "designDirectorPipeline": {
+      "sourceOntologies": ["SOP-ONT", "OFM-ONT", "LSC-ONT", "ORG-ONT", "ORG-CONTEXT-ONT"],
+      "compositionTarget": "emc:ComposedGraphSpec-W4M-EOMS",
+      "instanceConfigRef": "emc:InstanceConfiguration-W4M-EOMS"
+    },
+    "note": "Stock fulfilment may come from supply chain (LSC corridor) OR own stock inventory. Product catalogue resolution is pending — for now, both paths are modelled as fulfilment sources via SOP→OFM handoff."
+  },
+  "examples": [
+
+    {"_section": "=== INSTANCE CONFIGURATION ==="},
+
+    {
+      "@type": "emc:InstanceConfiguration",
+      "@id": "emc:InstanceConfiguration-W4M-EOMS",
+      "productCode": "W4M-EOMS",
+      "description": "W4M EOMS — Enterprise Order Management System. SaaS platform product providing end-to-end order lifecycle management. Core graph: SOP-ONT (sales order processing) → OFM-ONT (order fulfilment) → LSC-ONT (logistics). Foundation layer: ORG-ONT + ORG-CONTEXT-ONT for customer organisation, market segmentation, competitive landscape, and product catalogue.",
+      "contextLevel": "PFI",
+      "requirementScopes": [
+        "PRODUCT",
+        "FULFILMENT"
+      ],
+      "maturityLevel": 0,
+      "verticalMarket": "SaaS / Order Management",
+      "requiredOntologies": [
+        "SOP-ONT",
+        "OFM-ONT",
+        "LSC-ONT",
+        "ORG-ONT",
+        "ORG-CONTEXT-ONT"
+      ],
+      "recommendedOntologies": [
+        "RRR-ONT",
+        "CRT-ONT",
+        "VP-ONT",
+        "KPI-ONT",
+        "PE-ONT"
+      ],
+      "pendingOntologies": [],
+      "appSkeletonConfig": {
+        "baseApp": "pfc-visualiser",
+        "pfiOverrides": null,
+        "productOverrides": null,
+        "appOverrides": null
+      },
+      "instanceDataRefs": [
+        {
+          "ontology": "SOP-ONT",
+          "file": "PE-Series/SOP-ONT/instance-data/eoms/eoms-sop-instances-v1.0.0.json",
+          "description": "5 CustomerAccounts, 3 SalesChannels, 2 SalesTerritories, 3 PricingAgreements, 6 CustomerEnquiries, 4 SalesQuotations, 3 OrderCaptures, 3 OrderValidations, 3 CreditChecks — complete EOMS sales pipeline"
+        },
+        {
+          "ontology": "OFM-ONT",
+          "file": null,
+          "description": "OFM instance data pending — fulfilment-side instances to be created when SOP→OFM handoff is exercised"
+        },
+        {
+          "ontology": "LSC-ONT",
+          "file": null,
+          "description": "LSC instance data pending — supply chain corridors to be bound when product catalogue defines sourcing routes"
+        }
+      ],
+
+      "scopeRules": [
+
+        {"_section": "=== SCOPE RULE 1: EOMS PRODUCT MATCH ==="},
+
+        {
+          "@type": "emc:GraphScopeRule",
+          "@id": "emc:GraphScopeRule-EOMS-Product-Scope",
+          "ruleId": "EOMS-Product-Scope",
+          "ruleName": "EOMS Product Scope",
+          "description": "Include SOP, OFM, LSC entities scoped to W4M-EOMS product context. Loads sales order processing, fulfilment, and logistics entities specific to the EOMS platform.",
+          "scopeLevel": "entity",
+          "priority": 1,
+          "isActive": true,
+          "condition": {
+            "@type": "emc:ScopeCondition",
+            "conditionType": "product-match",
+            "conditionOperator": "equals",
+            "conditionValue": "W4M-EOMS",
+            "conditionTarget": "org-ctx:Product.productCode"
+          },
+          "action": {
+            "@type": "emc:ScopeAction",
+            "actionType": "include-data",
+            "targetNamespaces": ["sop:", "ofm:", "lsc:"],
+            "targetEntityTypes": [
+              "sop:SalesOrderProcess",
+              "sop:CustomerEnquiry",
+              "sop:SalesQuotation",
+              "sop:QuotationLine",
+              "sop:OrderCapture",
+              "sop:OrderValidation",
+              "sop:CreditCheck",
+              "sop:CustomerAccount",
+              "sop:SalesChannel",
+              "sop:SalesTerritory",
+              "sop:PricingAgreement",
+              "ofm:SalesOrder",
+              "ofm:OrderLine",
+              "ofm:ServiceLevelAgreement",
+              "lsc:SupplyChain",
+              "lsc:Party"
+            ],
+            "targetEntityFilter": "productContext == 'W4M-EOMS'",
+            "applyToRelationships": true
+          }
+        },
+
+        {"_section": "=== SCOPE RULE 2: CUSTOMER FOUNDATION ==="},
+
+        {
+          "@type": "emc:GraphScopeRule",
+          "@id": "emc:GraphScopeRule-EOMS-Customer-Foundation",
+          "ruleId": "EOMS-Customer-Foundation",
+          "ruleName": "EOMS Customer Foundation Scope",
+          "description": "Include Foundation layer for customer organisation context — ORG (legal entities), ORG-CONTEXT (market segments, competitive landscape, product catalogue). Essential for customer account management and segmentation within EOMS.",
+          "scopeLevel": "entity",
+          "priority": 2,
+          "isActive": true,
+          "condition": {
+            "@type": "emc:ScopeCondition",
+            "conditionType": "requirement-scope",
+            "conditionOperator": "contains",
+            "conditionValue": "FULFILMENT",
+            "conditionTarget": "emc:InstanceConfiguration.requirementScopes"
+          },
+          "action": {
+            "@type": "emc:ScopeAction",
+            "actionType": "include-data",
+            "targetNamespaces": ["org:", "org-ctx:"],
+            "targetEntityTypes": [
+              "org:Organization",
+              "org-ctx:OrganizationContext",
+              "org-ctx:MarketSegment",
+              "org-ctx:CompetitiveLandscape",
+              "org-ctx:Competitor",
+              "org-ctx:Product",
+              "org-ctx:ProductPortfolio"
+            ],
+            "targetEntityFilter": null,
+            "applyToRelationships": true
+          }
+        },
+
+        {"_section": "=== SCOPE RULE 3: FULFILMENT BRIDGE ==="},
+
+        {
+          "@type": "emc:GraphScopeRule",
+          "@id": "emc:GraphScopeRule-EOMS-Fulfilment-Bridge",
+          "ruleId": "EOMS-Fulfilment-Bridge",
+          "ruleName": "EOMS Fulfilment Bridge Scope",
+          "description": "Activate the SOP→OFM→LSC bridge chain. When FULFILMENT scope is active, ensure cross-ontology relationships are resolved: SOP validatedOrderToFulfilment → OFM, SOP quotationRequiresLogistics → LSC, OFM allocatedFromShipment → LSC.",
+          "scopeLevel": "ontology",
+          "priority": 3,
+          "isActive": true,
+          "condition": {
+            "@type": "emc:ScopeCondition",
+            "conditionType": "requirement-scope",
+            "conditionOperator": "contains",
+            "conditionValue": "FULFILMENT",
+            "conditionTarget": "emc:InstanceConfiguration.requirementScopes"
+          },
+          "action": {
+            "@type": "emc:ScopeAction",
+            "actionType": "include-data",
+            "targetNamespaces": ["sop:", "ofm:", "lsc:"],
+            "targetEntityTypes": [],
+            "targetEntityFilter": null,
+            "applyToRelationships": true
+          }
+        }
+      ],
+
+      "composedGraphSpec": {
+        "@type": "emc:ComposedGraphSpec",
+        "@id": "emc:ComposedGraphSpec-W4M-EOMS",
+        "specId": "W4M-EOMS-Graph-Spec",
+        "specName": "W4M EOMS Composed Graph Specification",
+        "description": "3-layer composed graph: (1) Sales layer — SOP-ONT enquiry/quotation/capture/validation pipeline; (2) Fulfilment layer — OFM-ONT order management, SLA, dispatch; (3) Supply layer — LSC-ONT logistics corridors and supply chain. Foundation substrate: ORG + ORG-CONTEXT for customer org, segmentation, competitive landscape. Stock sourcing may be external (LSC corridor) or internal (own inventory via product catalogue — pending resolution).",
+        "componentOntologies": [
+          "SOP-ONT",
+          "OFM-ONT",
+          "LSC-ONT",
+          "ORG-ONT",
+          "ORG-CONTEXT-ONT"
+        ],
+        "dataSliceRefs": [
+          {
+            "ontology": "SOP-ONT",
+            "slice": "EOMS customer accounts, enquiries, quotations, order captures, validations, credit checks, sales channels, territories, pricing agreements"
+          },
+          {
+            "ontology": "OFM-ONT",
+            "slice": "EOMS sales orders (post-handoff), order lines, stock allocations, SLAs, dispatch, margin tracking"
+          },
+          {
+            "ontology": "LSC-ONT",
+            "slice": "Supply chain corridors feeding EOMS fulfilment — sourcing routes per product catalogue"
+          },
+          {
+            "ontology": "ORG-ONT",
+            "slice": "Customer legal entities, supplier organisations"
+          },
+          {
+            "ontology": "ORG-CONTEXT-ONT",
+            "slice": "Customer market segments, competitive landscape, product catalogue, organisation context"
+          }
+        ],
+        "joinPoints": [
+          {
+            "from": "sop:OrderValidation",
+            "to": "ofm:SalesOrder",
+            "relationship": "validatedOrderToFulfilment",
+            "description": "THE critical bridge — validated EOMS order hands off to OFM fulfilment"
+          },
+          {
+            "from": "sop:OrderCapture",
+            "to": "ofm:ServiceLevelAgreement",
+            "relationship": "orderSelectsSLA",
+            "description": "SLA binding at order capture based on customer tier"
+          },
+          {
+            "from": "sop:QuotationLine",
+            "to": "lsc:SupplyChain",
+            "relationship": "quotationRequiresLogistics",
+            "description": "Quotation pricing validated against logistics cost basis"
+          },
+          {
+            "from": "sop:CustomerAccount",
+            "to": "org:Organization",
+            "relationship": "accountMapsToOrg",
+            "description": "Customer account links to legal entity"
+          },
+          {
+            "from": "sop:CustomerAccount",
+            "to": "org-ctx:MarketSegment",
+            "relationship": "accountInSegment",
+            "description": "Customer account belongs to market segment for targeting"
+          },
+          {
+            "from": "sop:CustomerAccount",
+            "to": "org-ctx:CompetitiveLandscape",
+            "relationship": "accountCompetitiveLandscape",
+            "description": "Customer's competitive context for sales intelligence"
+          },
+          {
+            "from": "sop:QuotationLine",
+            "to": "org-ctx:Product",
+            "relationship": "quotationLineRefsProduct",
+            "description": "Quotation line references product catalogue entry"
+          },
+          {
+            "from": "ofm:SalesOrder",
+            "to": "lsc:Shipment",
+            "relationship": "fulfilledByShipment",
+            "description": "Fulfilment order sourced from LSC supply chain shipment (external stock)"
+          }
+        ],
+        "rootAnchorEntity": "emc:InstanceConfiguration-W4M-EOMS",
+        "frozenVersion": null,
+        "note": "Graph spec not yet frozen — SOP instance data v1.0.0 created, OFM and LSC instances pending product catalogue resolution for stock sourcing (external corridor vs own inventory)"
+      }
+    },
+
+    {"_section": "=== COMPOSITION WORKED EXAMPLE ==="},
+
+    {
+      "_compositionWorkedExample": {
+        "input": {
+          "contextLevel": "PFI",
+          "productContext": "W4M-EOMS",
+          "orgContext": {
+            "industry": "SaaS",
+            "size": "Startup",
+            "maturityLevel": 0
+          },
+          "requirementScopes": [
+            "PRODUCT",
+            "FULFILMENT"
+          ]
+        },
+        "seriesActivation": {
+          "PRODUCT": [
+            "PE-Series (SOP, OFM, LSC)",
+            "Foundation (ORG, ORG-CONTEXT)"
+          ],
+          "FULFILMENT": [
+            "PE-Series (SOP→OFM→LSC bridge chain)"
+          ]
+        },
+        "rulesFired": [
+          {
+            "rule": "FoundationAlways",
+            "result": "ORG-ONT added to required"
+          },
+          {
+            "rule": "DependencyChain",
+            "result": "SOP needs OFM, LSC, ORG, ORG-CONTEXT → all already listed"
+          },
+          {
+            "rule": "MaturityFilter",
+            "result": "maturityLevel 0 → exclude KPI-ONT, GA-ONT, BSC-ONT from required (available as recommended)"
+          },
+          {
+            "rule": "PFIInstance",
+            "result": "Load EOMS instance data files (SOP instances)"
+          },
+          {
+            "rule": "FulfilmentBridge",
+            "result": "FULFILMENT scope active → resolve SOP→OFM→LSC bridge chain, load all 3 ontologies"
+          }
+        ],
+        "resolvedComposition": {
+          "requiredOntologies": [
+            "SOP-ONT",
+            "OFM-ONT",
+            "LSC-ONT",
+            "ORG-ONT",
+            "ORG-CONTEXT-ONT"
+          ],
+          "recommendedOntologies": [
+            "RRR-ONT",
+            "CRT-ONT",
+            "VP-ONT",
+            "KPI-ONT",
+            "PE-ONT"
+          ],
+          "optionalOntologies": [
+            "INDUSTRY-ONT",
+            "BSC-ONT"
+          ],
+          "excludedByMaturity": [
+            "GA-ONT"
+          ],
+          "activeSeries": [
+            "PE-Series",
+            "Foundation",
+            "Orchestration"
+          ]
+        },
+        "graphPatterns": [
+          "FulfilmentBridge (SOP → OFM → LSC chain)",
+          "HubSpoke (CustomerAccount hub → ORG, ORG-CONTEXT, SalesChannel, Territory spokes)",
+          "BridgeJoin (SOP↔OFM, SOP↔LSC, SOP↔ORG-CONTEXT)"
+        ]
+      }
+    }
+  ]
+}

@@ -18,9 +18,9 @@
 | **Overall RAG** | AMBER |
 | **Epics In Scope** | 5 (Epic 0, 1, 2, 3-Export, 8) |
 | **Epics Complete** | 1 (Epic 0 — G1 passed) |
-| **Features In Scope** | 17 |
-| **Features Complete** | 5 / 17 (F0.1–F0.5) |
-| **Stories Complete** | 13 / 53 |
+| **Features In Scope** | 18 |
+| **Features Complete** | 5 / 18 (F0.1–F0.5) |
+| **Stories Complete** | 13 / 56 |
 | **Next Gate** | G2 — Core Feature Complete |
 | **Blockers** | Client Supabase setup — needs shared Gmail (discuss with FB) |
 | **Key Decisions This Week** | Epic 8 added. Test data CSV imported. File-based JSON before DB — early client visualisation. Client Supabase ownership flagged P1. EOMS custom graph + EMC instance created — available in Ontology Visualiser for review. |
@@ -75,6 +75,10 @@
 | | US-0.5.2: Import sample customer data | Must | Done | |
 | | US-0.5.3: ~~Import sample FX contract data~~ | ~~Must~~ | Removed | Deferred: FX = Phase 3 |
 | | US-0.5.4: Import anonymised sale order test data (7,635 lines) | Must | Done | `PBS/Data-Test/` — CSV source for JSON conversion |
+| **F0.6: TDD & Process Definition** | | | **Not Started** | Derived from PRD |
+| | US-0.6.1: Technical Design Document (TDD) — architecture, data model, API contracts | Must | Not Started | Derived from PRD + HLD |
+| | US-0.6.2: EOMS Process Definition — order lifecycle, state transitions, business rules | Must | Not Started | Derived from PRD epics/stories |
+| | US-0.6.3: Map PRD user stories → TDD technical specifications | Must | Not Started | Traceability: PRD → TDD |
 
 ---
 
@@ -401,6 +405,9 @@ flowchart LR
 | DS-ONT Instance | 1.0.0 | [Link](../../instance-data/tokens/EOMS-DESIGN-SYSTEM-ONT/eoms-endeavour-ds-instance-v1.0.0.jsonld) |
 | App Skeleton | 1.0.0 | [Link](../../instance-data/skeleton/eoms-app-skeleton-v1.0.0.jsonld) |
 | Test Data CSV (Sale Orders) | - | [Link](../../PBS/Data-Test/EOMS%20%20ANON2%20Ord-Anon%20%20Sale%20Order%20Item%20Report_220120261650(Sale%20Order%20Item%20Report)%20-%20EOMS%20Test%20Data%20Anonymised.csv) |
+| EMC Instance (Graph) | 1.0.0 | [Link](../PBS-ONT-PFI-EOMS/eoms-emc-instance-v1.0.0.json) |
+| SOP Instances (Sales Pipeline) | 1.0.0 | [Link](../PBS-ONT-PFI-EOMS/eoms-sop-instances-v1.0.0.json) |
+| Graph Scope | 1.0.0 | [Link](../PBS-ONT-PFI-EOMS/pfi-w4m-eoms-graph-scope.json) |
 
 ### W4M-EOMS Custom Graph Instance — Future Integration Potential
 

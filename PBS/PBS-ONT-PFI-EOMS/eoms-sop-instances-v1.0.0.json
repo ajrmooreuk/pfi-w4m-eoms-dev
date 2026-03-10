@@ -1,0 +1,727 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "sop": "https://oaa-ontology.org/v6/sales-order-processing/",
+    "ofm": "https://oaa-ontology.org/v6/order-fulfilment/",
+    "lsc": "https://oaa-ontology.org/v6/logistics/",
+    "org": "https://platformcore.io/ontology/org/",
+    "org-ctx": "https://platformcore.io/ontology/org-context/",
+    "rrr": "https://platformcore.io/ontology/rrr/",
+    "crt": "https://platformcore.io/ontology/crt/"
+  },
+  "@type": "InstanceDataSet",
+  "@id": "sop:instances:eoms-sop-v1.0",
+  "metadata": {
+    "name": "W4M-EOMS SOP Instance Data — Sales Order Processing Pipeline",
+    "version": "1.0.0",
+    "status": "active",
+    "parentSchema": "sop-ontology-v1.0.0-oaa-v7.json",
+    "owningInstance": "PFI-W4M-EOMS",
+    "sourceOntology": "SOP-ONT v1.0.0",
+    "oaaVersion": "7.0.0",
+    "instanceScope": "fulfilment",
+    "industry": "SaaS / Order Management Platform",
+    "market": "UK B2B Wholesale Food Distribution (EOMS platform product)",
+    "domain": "Sales Order Processing / Customer Account Management / Quotation / Order Capture",
+    "description": "Complete SOP graph for W4M-EOMS. Models the EOMS platform's own order processing pipeline with 5 customer accounts across tiers (strategic to transactional), 3 sales channels, 2 territories, 3 pricing agreements, 6 enquiries, 4 quotations with line items, 3 order captures with validation and credit checks. Demonstrates SOP→OFM handoff and SOP→ORG-CONTEXT bridging for customer segmentation. Stock sourcing: external via LSC corridor OR own inventory (product catalogue resolution pending).",
+    "dateCreated": "2026-03-10",
+    "crossReferences": [
+      "ofm:instances:eoms-ofm (pending)",
+      "lsc:instances:eoms-lsc (pending)",
+      "org:w4m-eoms-customers",
+      "org-ctx:eoms-market-segments"
+    ]
+  },
+
+  "examples": [
+
+    {"_section": "=== SALES CHANNELS (3) ==="},
+
+    {
+      "@type": "sop:SalesChannel",
+      "@id": "sop:eoms-channel-direct",
+      "channelId": "sop:eoms-channel-direct",
+      "channelType": "direct-sales",
+      "channelModel": "B2B",
+      "isDigital": false,
+      "isActive": true,
+      "description": "Direct field sales — key account managers visiting strategic and key accounts"
+    },
+    {
+      "@type": "sop:SalesChannel",
+      "@id": "sop:eoms-channel-portal",
+      "channelId": "sop:eoms-channel-portal",
+      "channelType": "ecommerce",
+      "channelModel": "B2B",
+      "isDigital": true,
+      "isActive": true,
+      "description": "Self-service B2B ordering portal — standard and transactional accounts"
+    },
+    {
+      "@type": "sop:SalesChannel",
+      "@id": "sop:eoms-channel-edi",
+      "channelId": "sop:eoms-channel-edi",
+      "channelType": "edi-automated",
+      "channelModel": "B2B",
+      "isDigital": true,
+      "isActive": true,
+      "description": "EDI automated orders — large wholesalers and restaurant chains with system-to-system integration"
+    },
+
+    {"_section": "=== SALES TERRITORIES (2) ==="},
+
+    {
+      "@type": "sop:SalesTerritory",
+      "@id": "sop:eoms-territory-south",
+      "territoryId": "sop:eoms-territory-south",
+      "territoryName": "UK South & London",
+      "territoryType": "geographic",
+      "region": "UK-South",
+      "assignedRepCount": 3,
+      "revenueTarget": 2400000,
+      "relationships": {
+        "territoryAssignedToRole": "rrr:eoms-role-kam-south",
+        "territoryCoversSegment": ["org-ctx:eoms-segment-premium-dining", "org-ctx:eoms-segment-wholesale"]
+      }
+    },
+    {
+      "@type": "sop:SalesTerritory",
+      "@id": "sop:eoms-territory-north",
+      "territoryId": "sop:eoms-territory-north",
+      "territoryName": "UK North & Midlands",
+      "territoryType": "geographic",
+      "region": "UK-North",
+      "assignedRepCount": 2,
+      "revenueTarget": 1800000,
+      "relationships": {
+        "territoryAssignedToRole": "rrr:eoms-role-kam-north",
+        "territoryCoversSegment": ["org-ctx:eoms-segment-wholesale", "org-ctx:eoms-segment-retail"]
+      }
+    },
+
+    {"_section": "=== CUSTOMER ACCOUNTS (5 across tiers) ==="},
+
+    {
+      "@type": "sop:CustomerAccount",
+      "@id": "sop:eoms-acct-bdg",
+      "accountId": "sop:eoms-acct-bdg",
+      "accountName": "Belgravia Dining Group",
+      "accountStatus": "active",
+      "accountTier": "strategic",
+      "defaultPaymentTermsDays": 30,
+      "creditLimit": 150000,
+      "currency": "GBP",
+      "onboardedDate": "2024-06-15",
+      "relationships": {
+        "accountMapsToOrg": "org:bdg-ltd",
+        "accountInSegment": "org-ctx:eoms-segment-premium-dining",
+        "accountCompetitiveLandscape": "org-ctx:eoms-cl-premium-food",
+        "accountInTerritory": "sop:eoms-territory-south",
+        "accountHasPricingAgreement": "sop:eoms-pricing-strategic"
+      }
+    },
+    {
+      "@type": "sop:CustomerAccount",
+      "@id": "sop:eoms-acct-nwf",
+      "accountId": "sop:eoms-acct-nwf",
+      "accountName": "Northern Wholesale Foods",
+      "accountStatus": "active",
+      "accountTier": "key",
+      "defaultPaymentTermsDays": 45,
+      "creditLimit": 250000,
+      "currency": "GBP",
+      "onboardedDate": "2023-01-10",
+      "relationships": {
+        "accountMapsToOrg": "org:nwf-ltd",
+        "accountInSegment": "org-ctx:eoms-segment-wholesale",
+        "accountCompetitiveLandscape": "org-ctx:eoms-cl-wholesale-dist",
+        "accountInTerritory": "sop:eoms-territory-north",
+        "accountHasPricingAgreement": "sop:eoms-pricing-volume"
+      }
+    },
+    {
+      "@type": "sop:CustomerAccount",
+      "@id": "sop:eoms-acct-smf",
+      "accountId": "sop:eoms-acct-smf",
+      "accountName": "Sussex Market Foods",
+      "accountStatus": "active",
+      "accountTier": "standard",
+      "defaultPaymentTermsDays": 30,
+      "creditLimit": 50000,
+      "currency": "GBP",
+      "onboardedDate": "2025-03-22",
+      "relationships": {
+        "accountMapsToOrg": "org:smf-ltd",
+        "accountInSegment": "org-ctx:eoms-segment-retail",
+        "accountInTerritory": "sop:eoms-territory-south",
+        "accountHasPricingAgreement": "sop:eoms-pricing-standard"
+      }
+    },
+    {
+      "@type": "sop:CustomerAccount",
+      "@id": "sop:eoms-acct-hcs",
+      "accountId": "sop:eoms-acct-hcs",
+      "accountName": "Highland Catering Supplies",
+      "accountStatus": "active",
+      "accountTier": "standard",
+      "defaultPaymentTermsDays": 30,
+      "creditLimit": 75000,
+      "currency": "GBP",
+      "onboardedDate": "2025-09-01",
+      "relationships": {
+        "accountMapsToOrg": "org:hcs-ltd",
+        "accountInSegment": "org-ctx:eoms-segment-wholesale",
+        "accountInTerritory": "sop:eoms-territory-north"
+      }
+    },
+    {
+      "@type": "sop:CustomerAccount",
+      "@id": "sop:eoms-acct-tbc",
+      "accountId": "sop:eoms-acct-tbc",
+      "accountName": "The Borough Collective",
+      "accountStatus": "prospect",
+      "accountTier": "transactional",
+      "defaultPaymentTermsDays": 14,
+      "creditLimit": 10000,
+      "currency": "GBP",
+      "onboardedDate": null,
+      "relationships": {
+        "accountInSegment": "org-ctx:eoms-segment-premium-dining",
+        "accountInTerritory": "sop:eoms-territory-south"
+      }
+    },
+
+    {"_section": "=== PRICING AGREEMENTS (3) ==="},
+
+    {
+      "@type": "sop:PricingAgreement",
+      "@id": "sop:eoms-pricing-strategic",
+      "agreementId": "sop:eoms-pricing-strategic",
+      "agreementType": "negotiated",
+      "validFrom": "2026-01-01",
+      "validTo": "2026-12-31",
+      "discountStructure": "12% off list price on all chilled/frozen lines; 8% on ambient. Quarterly rebate at 2% above GBP 100k cumulative.",
+      "minimumOrderValue": 5000,
+      "currency": "GBP"
+    },
+    {
+      "@type": "sop:PricingAgreement",
+      "@id": "sop:eoms-pricing-volume",
+      "agreementId": "sop:eoms-pricing-volume",
+      "agreementType": "volume-tiered",
+      "validFrom": "2026-01-01",
+      "validTo": "2026-12-31",
+      "discountStructure": "Tier 1 (0-5t): list price; Tier 2 (5-15t): 5% off; Tier 3 (15t+): 10% off. All commodity classes.",
+      "minimumOrderValue": 2000,
+      "currency": "GBP"
+    },
+    {
+      "@type": "sop:PricingAgreement",
+      "@id": "sop:eoms-pricing-standard",
+      "agreementId": "sop:eoms-pricing-standard",
+      "agreementType": "standard-list",
+      "validFrom": "2026-01-01",
+      "validTo": "2026-12-31",
+      "discountStructure": "Standard list price. No volume discount. Promotional pricing applied ad-hoc.",
+      "minimumOrderValue": 500,
+      "currency": "GBP"
+    },
+
+    {"_section": "=== CUSTOMER ENQUIRIES (6) ==="},
+
+    {
+      "@type": "sop:CustomerEnquiry",
+      "@id": "sop:eoms-enq-001",
+      "enquiryId": "sop:eoms-enq-001",
+      "enquiryType": "repeat-order",
+      "receivedAt": "2026-03-01T09:15:00Z",
+      "sourceChannel": "sop:eoms-channel-direct",
+      "customerNeed": "Restock AU chilled grass-fed beef primals for spring menu launch — 6 tonnes, 3 cuts",
+      "urgency": "standard",
+      "relationships": {
+        "enquiryFromAccount": "sop:eoms-acct-bdg",
+        "enquiryViaChannel": "sop:eoms-channel-direct",
+        "generatesQuotation": "sop:eoms-quot-001"
+      }
+    },
+    {
+      "@type": "sop:CustomerEnquiry",
+      "@id": "sop:eoms-enq-002",
+      "enquiryId": "sop:eoms-enq-002",
+      "enquiryType": "repeat-order",
+      "receivedAt": "2026-03-02T14:30:00Z",
+      "sourceChannel": "sop:eoms-channel-edi",
+      "customerNeed": "Monthly NZ dairy and lamb replenishment — mixed chilled/frozen, 12 tonnes",
+      "urgency": "standard",
+      "relationships": {
+        "enquiryFromAccount": "sop:eoms-acct-nwf",
+        "enquiryViaChannel": "sop:eoms-channel-edi",
+        "generatesQuotation": "sop:eoms-quot-002"
+      }
+    },
+    {
+      "@type": "sop:CustomerEnquiry",
+      "@id": "sop:eoms-enq-003",
+      "enquiryId": "sop:eoms-enq-003",
+      "enquiryType": "spot-buy",
+      "receivedAt": "2026-03-03T10:00:00Z",
+      "sourceChannel": "sop:eoms-channel-portal",
+      "customerNeed": "Icelandic cod loins, 2 tonnes — spot availability check for Easter promotion",
+      "urgency": "urgent",
+      "relationships": {
+        "enquiryFromAccount": "sop:eoms-acct-smf",
+        "enquiryViaChannel": "sop:eoms-channel-portal",
+        "generatesQuotation": "sop:eoms-quot-003"
+      }
+    },
+    {
+      "@type": "sop:CustomerEnquiry",
+      "@id": "sop:eoms-enq-004",
+      "enquiryId": "sop:eoms-enq-004",
+      "enquiryType": "new-business",
+      "receivedAt": "2026-03-04T11:20:00Z",
+      "sourceChannel": "sop:eoms-channel-direct",
+      "customerNeed": "New customer prospect — interested in premium AU wagyu beef for restaurant group (5 sites)",
+      "urgency": "standard",
+      "relationships": {
+        "enquiryFromAccount": "sop:eoms-acct-tbc",
+        "enquiryViaChannel": "sop:eoms-channel-direct",
+        "generatesQuotation": "sop:eoms-quot-004"
+      }
+    },
+    {
+      "@type": "sop:CustomerEnquiry",
+      "@id": "sop:eoms-enq-005",
+      "enquiryId": "sop:eoms-enq-005",
+      "enquiryType": "upsell",
+      "receivedAt": "2026-03-05T08:45:00Z",
+      "sourceChannel": "sop:eoms-channel-direct",
+      "customerNeed": "Cross-sell IE grass-fed butter to existing NZ dairy account — 3 pallets trial",
+      "urgency": "standard",
+      "relationships": {
+        "enquiryFromAccount": "sop:eoms-acct-nwf",
+        "enquiryViaChannel": "sop:eoms-channel-direct"
+      }
+    },
+    {
+      "@type": "sop:CustomerEnquiry",
+      "@id": "sop:eoms-enq-006",
+      "enquiryId": "sop:eoms-enq-006",
+      "enquiryType": "repeat-order",
+      "receivedAt": "2026-03-06T16:10:00Z",
+      "sourceChannel": "sop:eoms-channel-portal",
+      "customerNeed": "Standing weekly order — mixed protein case (beef, lamb, seafood) for catering supply",
+      "urgency": "standard",
+      "relationships": {
+        "enquiryFromAccount": "sop:eoms-acct-hcs",
+        "enquiryViaChannel": "sop:eoms-channel-portal"
+      }
+    },
+
+    {"_section": "=== SALES QUOTATIONS (4 with line items) ==="},
+
+    {
+      "@type": "sop:SalesQuotation",
+      "@id": "sop:eoms-quot-001",
+      "quotationId": "sop:eoms-quot-001",
+      "quotationStatus": "accepted",
+      "issuedAt": "2026-03-01T14:00:00Z",
+      "validUntil": "2026-03-15",
+      "totalQuotedValue": 42000,
+      "currency": "GBP",
+      "marginTarget": 20.0,
+      "paymentTermsDays": 30,
+      "deliveryTerms": "DDP",
+      "relationships": {
+        "quotationForAccount": "sop:eoms-acct-bdg",
+        "quotationUsesPricing": "sop:eoms-pricing-strategic",
+        "quotationConvertsToOrder": "sop:eoms-capture-001",
+        "quotationAddressesNeed": "vp:eoms-problem-spring-menu-sourcing",
+        "quotationProposesValue": "vp:eoms-solution-premium-protein-supply",
+        "hasQuotationLine": ["sop:eoms-qline-001-01", "sop:eoms-qline-001-02", "sop:eoms-qline-001-03"]
+      }
+    },
+    {
+      "@type": "sop:QuotationLine",
+      "@id": "sop:eoms-qline-001-01",
+      "lineId": "sop:eoms-qline-001-01",
+      "productRef": "org-ctx:product-au-beef-ribeye",
+      "quantity": 2000,
+      "unitOfMeasure": "kg",
+      "unitPrice": 8.50,
+      "discountPercent": 12,
+      "lineTotal": 14960,
+      "estimatedLeadTimeDays": 21,
+      "relationships": {
+        "quotationLineRefsProduct": "org-ctx:product-au-beef-ribeye",
+        "quotationRequiresLogistics": "lsc:wwg-chain-au-uk-beef-001"
+      }
+    },
+    {
+      "@type": "sop:QuotationLine",
+      "@id": "sop:eoms-qline-001-02",
+      "lineId": "sop:eoms-qline-001-02",
+      "productRef": "org-ctx:product-au-beef-striploin",
+      "quantity": 2500,
+      "unitOfMeasure": "kg",
+      "unitPrice": 7.20,
+      "discountPercent": 12,
+      "lineTotal": 15840,
+      "estimatedLeadTimeDays": 21,
+      "relationships": {
+        "quotationLineRefsProduct": "org-ctx:product-au-beef-striploin",
+        "quotationRequiresLogistics": "lsc:wwg-chain-au-uk-beef-001"
+      }
+    },
+    {
+      "@type": "sop:QuotationLine",
+      "@id": "sop:eoms-qline-001-03",
+      "lineId": "sop:eoms-qline-001-03",
+      "productRef": "org-ctx:product-au-beef-tenderloin",
+      "quantity": 1500,
+      "unitOfMeasure": "kg",
+      "unitPrice": 9.60,
+      "discountPercent": 12,
+      "lineTotal": 12672,
+      "estimatedLeadTimeDays": 21,
+      "relationships": {
+        "quotationLineRefsProduct": "org-ctx:product-au-beef-tenderloin",
+        "quotationRequiresLogistics": "lsc:wwg-chain-au-uk-beef-001"
+      }
+    },
+    {
+      "@type": "sop:SalesQuotation",
+      "@id": "sop:eoms-quot-002",
+      "quotationId": "sop:eoms-quot-002",
+      "quotationStatus": "accepted",
+      "issuedAt": "2026-03-02T16:00:00Z",
+      "validUntil": "2026-03-16",
+      "totalQuotedValue": 65000,
+      "currency": "GBP",
+      "marginTarget": 15.0,
+      "paymentTermsDays": 45,
+      "deliveryTerms": "DDP",
+      "relationships": {
+        "quotationForAccount": "sop:eoms-acct-nwf",
+        "quotationUsesPricing": "sop:eoms-pricing-volume",
+        "quotationConvertsToOrder": "sop:eoms-capture-002",
+        "hasQuotationLine": ["sop:eoms-qline-002-01", "sop:eoms-qline-002-02"]
+      }
+    },
+    {
+      "@type": "sop:QuotationLine",
+      "@id": "sop:eoms-qline-002-01",
+      "lineId": "sop:eoms-qline-002-01",
+      "productRef": "org-ctx:product-nz-dairy-butter",
+      "quantity": 5000,
+      "unitOfMeasure": "kg",
+      "unitPrice": 4.80,
+      "discountPercent": 10,
+      "lineTotal": 21600,
+      "estimatedLeadTimeDays": 28,
+      "relationships": {
+        "quotationLineRefsProduct": "org-ctx:product-nz-dairy-butter",
+        "quotationRequiresLogistics": "lsc:wwg-chain-nz-uk-dairy-001"
+      }
+    },
+    {
+      "@type": "sop:QuotationLine",
+      "@id": "sop:eoms-qline-002-02",
+      "lineId": "sop:eoms-qline-002-02",
+      "productRef": "org-ctx:product-nz-lamb-leg",
+      "quantity": 7000,
+      "unitOfMeasure": "kg",
+      "unitPrice": 6.50,
+      "discountPercent": 10,
+      "lineTotal": 40950,
+      "estimatedLeadTimeDays": 28,
+      "relationships": {
+        "quotationLineRefsProduct": "org-ctx:product-nz-lamb-leg",
+        "quotationRequiresLogistics": "lsc:wwg-chain-nz-uk-dairy-001"
+      }
+    },
+    {
+      "@type": "sop:SalesQuotation",
+      "@id": "sop:eoms-quot-003",
+      "quotationId": "sop:eoms-quot-003",
+      "quotationStatus": "accepted",
+      "issuedAt": "2026-03-03T12:00:00Z",
+      "validUntil": "2026-03-10",
+      "totalQuotedValue": 18400,
+      "currency": "GBP",
+      "marginTarget": 18.0,
+      "paymentTermsDays": 30,
+      "deliveryTerms": "DDP",
+      "relationships": {
+        "quotationForAccount": "sop:eoms-acct-smf",
+        "quotationUsesPricing": "sop:eoms-pricing-standard",
+        "quotationConvertsToOrder": "sop:eoms-capture-003",
+        "hasQuotationLine": ["sop:eoms-qline-003-01"]
+      }
+    },
+    {
+      "@type": "sop:QuotationLine",
+      "@id": "sop:eoms-qline-003-01",
+      "lineId": "sop:eoms-qline-003-01",
+      "productRef": "org-ctx:product-is-cod-loins",
+      "quantity": 2000,
+      "unitOfMeasure": "kg",
+      "unitPrice": 9.20,
+      "discountPercent": 0,
+      "lineTotal": 18400,
+      "estimatedLeadTimeDays": 14,
+      "relationships": {
+        "quotationLineRefsProduct": "org-ctx:product-is-cod-loins",
+        "quotationRequiresLogistics": "lsc:wwg-chain-is-uk-seafood-001"
+      },
+      "note": "Spot buy — stock sourcing check: may fulfil from own inventory if IS corridor shipment available in cold store. Product catalogue resolution pending."
+    },
+    {
+      "@type": "sop:SalesQuotation",
+      "@id": "sop:eoms-quot-004",
+      "quotationId": "sop:eoms-quot-004",
+      "quotationStatus": "issued",
+      "issuedAt": "2026-03-05T10:00:00Z",
+      "validUntil": "2026-03-19",
+      "totalQuotedValue": 28000,
+      "currency": "GBP",
+      "marginTarget": 22.0,
+      "paymentTermsDays": 14,
+      "deliveryTerms": "DDP",
+      "relationships": {
+        "quotationForAccount": "sop:eoms-acct-tbc",
+        "hasQuotationLine": ["sop:eoms-qline-004-01"]
+      },
+      "note": "New prospect — quotation issued, awaiting acceptance. No pricing agreement yet (transactional tier, list price)."
+    },
+    {
+      "@type": "sop:QuotationLine",
+      "@id": "sop:eoms-qline-004-01",
+      "lineId": "sop:eoms-qline-004-01",
+      "productRef": "org-ctx:product-au-wagyu-ribeye",
+      "quantity": 500,
+      "unitOfMeasure": "kg",
+      "unitPrice": 56.00,
+      "discountPercent": 0,
+      "lineTotal": 28000,
+      "estimatedLeadTimeDays": 28,
+      "relationships": {
+        "quotationLineRefsProduct": "org-ctx:product-au-wagyu-ribeye",
+        "quotationRequiresLogistics": "lsc:wwg-chain-au-uk-beef-001"
+      }
+    },
+
+    {"_section": "=== ORDER CAPTURES (3 — converted quotations) ==="},
+
+    {
+      "@type": "sop:OrderCapture",
+      "@id": "sop:eoms-capture-001",
+      "captureId": "sop:eoms-capture-001",
+      "captureMethod": "manual-entry",
+      "capturedAt": "2026-03-02T10:30:00Z",
+      "capturedBy": "KAM-South-JW",
+      "customerPORef": "BDG-PO-2026-0089",
+      "requestedDeliveryDate": "2026-03-22",
+      "orderValue": 42000,
+      "currency": "GBP",
+      "relationships": {
+        "captureForAccount": "sop:eoms-acct-bdg",
+        "captureViaChannel": "sop:eoms-channel-direct",
+        "captureValidatedBy": "sop:eoms-val-001",
+        "captureTriggersCreditCheck": "sop:eoms-credit-001",
+        "orderSelectsSLA": "ofm:eoms-sla-premium",
+        "orderPlacedByCustomerRole": "crt:eoms-role-head-chef",
+        "orderFulfilledViaChain": "lsc:wwg-chain-au-uk-beef-001"
+      }
+    },
+    {
+      "@type": "sop:OrderCapture",
+      "@id": "sop:eoms-capture-002",
+      "captureId": "sop:eoms-capture-002",
+      "captureMethod": "edi",
+      "capturedAt": "2026-03-03T07:00:00Z",
+      "capturedBy": "EDI-AUTO",
+      "customerPORef": "NWF-PO-2026-0412",
+      "requestedDeliveryDate": "2026-03-28",
+      "orderValue": 65000,
+      "currency": "GBP",
+      "relationships": {
+        "captureForAccount": "sop:eoms-acct-nwf",
+        "captureViaChannel": "sop:eoms-channel-edi",
+        "captureValidatedBy": "sop:eoms-val-002",
+        "captureTriggersCreditCheck": "sop:eoms-credit-002",
+        "orderSelectsSLA": "ofm:eoms-sla-standard",
+        "orderPlacedByCustomerRole": "crt:eoms-role-procurement-manager",
+        "orderFulfilledViaChain": "lsc:wwg-chain-nz-uk-dairy-001"
+      }
+    },
+    {
+      "@type": "sop:OrderCapture",
+      "@id": "sop:eoms-capture-003",
+      "captureId": "sop:eoms-capture-003",
+      "captureMethod": "portal",
+      "capturedAt": "2026-03-03T14:20:00Z",
+      "capturedBy": "PORTAL-SMF-USER",
+      "customerPORef": "SMF-PO-2026-0055",
+      "requestedDeliveryDate": "2026-03-17",
+      "orderValue": 18400,
+      "currency": "GBP",
+      "relationships": {
+        "captureForAccount": "sop:eoms-acct-smf",
+        "captureViaChannel": "sop:eoms-channel-portal",
+        "captureValidatedBy": "sop:eoms-val-003",
+        "captureTriggersCreditCheck": "sop:eoms-credit-003",
+        "orderSelectsSLA": "ofm:eoms-sla-standard",
+        "orderFulfilledViaChain": "lsc:wwg-chain-is-uk-seafood-001"
+      },
+      "note": "Spot buy cod loins — urgent Easter stock. May fulfil from own inventory if available."
+    },
+
+    {"_section": "=== ORDER VALIDATIONS (3) ==="},
+
+    {
+      "@type": "sop:OrderValidation",
+      "@id": "sop:eoms-val-001",
+      "validationId": "sop:eoms-val-001",
+      "validationStatus": "passed",
+      "validatedAt": "2026-03-02T10:35:00Z",
+      "validationRules": ["credit-limit-check", "product-availability", "pricing-approval", "delivery-feasibility"],
+      "failureReasons": [],
+      "overrideApprovedBy": null,
+      "relationships": {
+        "validatedOrderToFulfilment": "ofm:eoms-order-001"
+      }
+    },
+    {
+      "@type": "sop:OrderValidation",
+      "@id": "sop:eoms-val-002",
+      "validationId": "sop:eoms-val-002",
+      "validationStatus": "passed",
+      "validatedAt": "2026-03-03T07:05:00Z",
+      "validationRules": ["credit-limit-check", "product-availability", "pricing-approval", "delivery-feasibility", "edi-format-validation"],
+      "failureReasons": [],
+      "overrideApprovedBy": null,
+      "relationships": {
+        "validatedOrderToFulfilment": "ofm:eoms-order-002"
+      }
+    },
+    {
+      "@type": "sop:OrderValidation",
+      "@id": "sop:eoms-val-003",
+      "validationId": "sop:eoms-val-003",
+      "validationStatus": "passed",
+      "validatedAt": "2026-03-03T14:25:00Z",
+      "validationRules": ["credit-limit-check", "product-availability", "pricing-approval", "delivery-feasibility"],
+      "failureReasons": [],
+      "overrideApprovedBy": null,
+      "relationships": {
+        "validatedOrderToFulfilment": "ofm:eoms-order-003"
+      }
+    },
+
+    {"_section": "=== CREDIT CHECKS (3) ==="},
+
+    {
+      "@type": "sop:CreditCheck",
+      "@id": "sop:eoms-credit-001",
+      "creditCheckId": "sop:eoms-credit-001",
+      "checkStatus": "approved",
+      "creditLimit": 150000,
+      "currentExposure": 38000,
+      "orderValue": 42000,
+      "headroomAfterOrder": 70000,
+      "riskScore": 12,
+      "checkedAt": "2026-03-02T10:32:00Z",
+      "relationships": {
+        "creditCheckForAccount": "sop:eoms-acct-bdg"
+      }
+    },
+    {
+      "@type": "sop:CreditCheck",
+      "@id": "sop:eoms-credit-002",
+      "creditCheckId": "sop:eoms-credit-002",
+      "checkStatus": "approved",
+      "creditLimit": 250000,
+      "currentExposure": 120000,
+      "orderValue": 65000,
+      "headroomAfterOrder": 65000,
+      "riskScore": 25,
+      "checkedAt": "2026-03-03T07:02:00Z",
+      "relationships": {
+        "creditCheckForAccount": "sop:eoms-acct-nwf"
+      }
+    },
+    {
+      "@type": "sop:CreditCheck",
+      "@id": "sop:eoms-credit-003",
+      "creditCheckId": "sop:eoms-credit-003",
+      "checkStatus": "approved",
+      "creditLimit": 50000,
+      "currentExposure": 12000,
+      "orderValue": 18400,
+      "headroomAfterOrder": 19600,
+      "riskScore": 18,
+      "checkedAt": "2026-03-03T14:22:00Z",
+      "relationships": {
+        "creditCheckForAccount": "sop:eoms-acct-smf"
+      }
+    },
+
+    {"_section": "=== SALES ORDER PROCESSES (3 — complete lifecycle traces) ==="},
+
+    {
+      "@type": "sop:SalesOrderProcess",
+      "@id": "sop:eoms-process-001",
+      "processId": "sop:eoms-process-001",
+      "processStatus": "handed-to-fulfilment",
+      "salesChannelRef": "sop:eoms-channel-direct",
+      "startedAt": "2026-03-01T09:15:00Z",
+      "completedAt": "2026-03-02T10:35:00Z",
+      "handoffTimestamp": "2026-03-02T10:35:00Z",
+      "totalValue": 42000,
+      "currency": "GBP",
+      "relationships": {
+        "processStartsWithEnquiry": "sop:eoms-enq-001",
+        "processUsesChannel": "sop:eoms-channel-direct",
+        "mapsToProcess": "pe:eoms-sales-process-standard"
+      },
+      "description": "BDG strategic account — AU beef restock. Enquiry→Quotation→Capture→Validation→Handoff in 25 hours."
+    },
+    {
+      "@type": "sop:SalesOrderProcess",
+      "@id": "sop:eoms-process-002",
+      "processId": "sop:eoms-process-002",
+      "processStatus": "handed-to-fulfilment",
+      "salesChannelRef": "sop:eoms-channel-edi",
+      "startedAt": "2026-03-02T14:30:00Z",
+      "completedAt": "2026-03-03T07:05:00Z",
+      "handoffTimestamp": "2026-03-03T07:05:00Z",
+      "totalValue": 65000,
+      "currency": "GBP",
+      "relationships": {
+        "processStartsWithEnquiry": "sop:eoms-enq-002",
+        "processUsesChannel": "sop:eoms-channel-edi",
+        "mapsToProcess": "pe:eoms-sales-process-edi-auto"
+      },
+      "description": "NWF key account — EDI auto-order NZ dairy+lamb. Enquiry→Quotation→Capture→Validation→Handoff in 16.5 hours (overnight EDI batch)."
+    },
+    {
+      "@type": "sop:SalesOrderProcess",
+      "@id": "sop:eoms-process-003",
+      "processId": "sop:eoms-process-003",
+      "processStatus": "handed-to-fulfilment",
+      "salesChannelRef": "sop:eoms-channel-portal",
+      "startedAt": "2026-03-03T10:00:00Z",
+      "completedAt": "2026-03-03T14:25:00Z",
+      "handoffTimestamp": "2026-03-03T14:25:00Z",
+      "totalValue": 18400,
+      "currency": "GBP",
+      "relationships": {
+        "processStartsWithEnquiry": "sop:eoms-enq-003",
+        "processUsesChannel": "sop:eoms-channel-portal",
+        "mapsToProcess": "pe:eoms-sales-process-portal"
+      },
+      "description": "SMF standard account — portal spot buy IS cod loins. Enquiry→Quotation→Capture→Validation→Handoff in 4.4 hours (urgent)."
+    }
+  ]
+}
